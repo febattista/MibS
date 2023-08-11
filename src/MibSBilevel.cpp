@@ -1634,9 +1634,10 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 		llSol[i] = sol[idx];
 	}
 	
-	int size = model_->seenImprovingDirections.size();
-	for (IMPROVING_DIRECTION &w : model_->seenImprovingDirections)
+	IMPROVING_DIRECTION *w;
+	for (size_t j = 0; j < model_->seenImprovingDirections.size(); j++)
 	{
+		w = &(model_->seenImprovingDirections[j]);
 		// std::cout << "w: ";
 		// std::cout << "---------------\n";
 		// for (int i = 0; i < w.idx.size(); i++){
@@ -1645,9 +1646,9 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 		// std::cout << "\n";
 		isFeasible = true;
 
-		for (i = 0; i < w.idx.size(); i++)
+		for (i = 0; i < w->idx.size(); i++)
 		{
-			if (w.vals[i] < -llSol[w.idx[i]])
+			if (w->vals[i] < -llSol[w->idx[i]])
 			{
 				// std::cout << "is infeasible! delta y < -y \n";
 				isFeasible = false;
@@ -1655,10 +1656,10 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 			}
 		}
 
-		for (i = 0; i < w.idx.size(); i++)
+		for (i = 0; i < w->idx.size(); i++)
 		{
-			if ((w.vals[i] + llSol[w.idx[i]] - currColUb[i] > zerotol) ||
-				(w.vals[i] + llSol[w.idx[i]] - currColLb[i] < -zerotol))
+			if ((w->vals[i] + llSol[w->idx[i]] - currColUb[i] > zerotol) ||
+				(w->vals[i] + llSol[w->idx[i]] - currColLb[i] < -zerotol))
 			{
 				// std::cout << "is infeasible! variable bounds \n";
 				isFeasible = false;
@@ -1671,11 +1672,11 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 		const double *elem = G2colOrd->getElements();
 		const int *indices = G2colOrd->getIndices();
 
-		for (i = w.idx.size() - 1; i >= 0; --i)
+		for (i = w->idx.size() - 1; i >= 0; --i)
 		{
-			const CoinBigIndex last = G2colOrd->getVectorLast(w.idx[i]);
-			for (CoinBigIndex j = G2colOrd->getVectorFirst(w.idx[i]); j < last; ++j)
-				lhs[indices[j]] += w.vals[i] * elem[j];
+			const CoinBigIndex last = G2colOrd->getVectorLast(w->idx[i]);
+			for (CoinBigIndex j = G2colOrd->getVectorFirst(w->idx[i]); j < last; ++j)
+				lhs[indices[j]] += w->vals[i] * elem[j];
 		}
 
 		for (i = 0; i < lRows; i++)

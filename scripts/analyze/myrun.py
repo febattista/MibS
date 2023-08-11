@@ -75,6 +75,16 @@ mibsParamsInputs['kSwaps+IDP'] = {
     'MibS_useImprovingDirectionPool': '1'
 }
 
+mibsParamsInputs['watermelon+IDP'] = {
+    'MibS_turnOffDefaultCuts': '1',
+    'MibS_useIntersectionCut': '1',
+    'MibS_useImprovingSolutionIC': '0',
+    'MibS_useImprovingDirectionIC': '1',
+    'MibS_improvingDirectionType': '0',
+    'MibS_useFractionalCuts': '1',
+    'MibS_useImprovingDirectionPool': '1'
+}
+
 mibsParamsInputs['kSwaps'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
@@ -94,66 +104,7 @@ mibsParamsInputs['watermelon'] = {
     'MibS_useFractionalCuts': '1'
 }
 
-# mibsParamsInputs['default+frac-new-tailoff'] = {
-#     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.01'
-# }
-
-# mibsParamsInputs['default+frac-new-tailoff-005'] = {
-#     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.005'
-# }
-
-# mibsParamsInputs['default+frac-new-tailoff-05'] = {
-#     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.05'
-# }
-
-mibsParamsInputs['default-new-tailoff-05'] = {
-     'Blis_tailOff': '.05'
-}
-
-# mibsParamsInputs['default+frac-new-tailoff-1'] = {
-#     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.1'
-# }
-
-# mibsParamsInputs['default+link-new-tailoff'] = {
-#     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.01'
-# }
-
-# mibsParamsInputs['default+link-new-tailoff-005'] = {
-#     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.005'
-# }
-
-mibsParamsInputs['default+link-new-tailoff-001'] = {
-    'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
-    'Blis_tailOff': '.001'
-}
-
-# mibsParamsInputs['default+link-new-tailoff-05'] = {
-#     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.05'
-# }
-
-# mibsParamsInputs['default+link-new-tailoff-1'] = {
-#     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
-#     'Blis_tailOff': '.1'
-# }
-
-#mibsParamsInputs['default'] = {
-#}
-
-#mibsParamsInputs['defaultWithExtraOutput'] = {
-#}
-
-# mibsParamsInputs['default+frac'] = {
-#     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
-# }
-
-# mibsParamsInputs['default+linking'] = {
+# mibsParamsInputs['default'] = {
 #     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
 # }
 
