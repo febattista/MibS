@@ -195,6 +195,10 @@ MibSParams::createKeywordList() {
    keys_.push_back(make_pair(std::string("MibS_bilevelFreeSetTypeISIC"),
 			     AlpsParameter(AlpsIntPar, bilevelFreeSetTypeISIC)));
 
+   // feb233
+   keys_.push_back(make_pair(std::string("MibS_improvingDirectionType"),
+              AlpsParameter(AlpsIntPar, improvingDirectionType)));
+
    keys_.push_back(make_pair(std::string("MibS_useFractionalCuts"),
 			     AlpsParameter(AlpsIntPar, useFractionalCuts)));
 
@@ -203,6 +207,10 @@ MibSParams::createKeywordList() {
                                            useFractionalCutsRootOnly)));
 
    //solve lower-level Parameters
+   // feb233
+   keys_.push_back(make_pair(std::string("MibS_useImprovingDirectionPool"),
+              AlpsParameter(AlpsIntPar, useImprovingDirectionPool)));
+
    keys_.push_back(make_pair(std::string("MibS_solveSecondLevelEveryIteration"),
 			     AlpsParameter(AlpsIntPar, solveSecondLevelEveryIteration)));
 
@@ -390,7 +398,9 @@ MibSParams::setDefaultEntries() {
 
    setEntry(bilevelFreeSetTypeISIC, MibSBilevelFreeSetTypeISICWithLLOptSol);
 
-   setEntry(solveSecondLevelEveryIteration, PARAM_OFF);
+   setEntry(improvingDirectionType, MibSImprovingDirectionTypeOptSol);
+
+   setEntry(solveSecondLevelEveryIteration, PARAM_NOTSET);
 
    setEntry(solveSecondLevelWhenXYVarsInt, PARAM_ON);
 

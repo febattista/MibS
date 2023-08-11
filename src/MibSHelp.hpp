@@ -26,4 +26,38 @@ struct LINKING_SOLUTION{
     std::vector<double> UBSolution;
 };
 
+// feb223
+struct IMPROVING_DIRECTION {
+    std::vector<int> idx;
+    std::vector<double> vals;
+    std::vector<int> uselessIneqsIdx;
+    std::vector<double> uselessIneqsVals;
+    double quality;
+    double numIneqs;
+    
+    bool operator<(const IMPROVING_DIRECTION& other) const {
+        if (numIneqs == other.numIneqs)
+            return quality < other.quality;
+        else
+            return numIneqs < other.numIneqs;
+    }
+
+    bool compareDirections(const IMPROVING_DIRECTION& me, 
+                              const IMPROVING_DIRECTION& other){
+        return me.idx.size() < other.idx.size();
+    }  
+
+    bool operator==(const IMPROVING_DIRECTION& other) const {
+        return (idx == other.idx) && (vals == other.vals);
+    }
+};
+
+struct ID_STATISTICS {
+    int enumerated;
+    int fracCalls;
+    int intCalls;
+    int fracCallFailed;
+    int intCallFailed;
+};
+
 #endif

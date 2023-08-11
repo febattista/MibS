@@ -122,6 +122,10 @@ private:
     void setWarmStart(CoinWarmStart * ws) {ws_ = ws;}
     void addSolutionToSeenLinkingSolutionPool(MibSLinkingPoolTag solTag, std::vector<double>
 		      &shouldStoreValues, double objValue);
+
+    // feb223
+    int checkImprovingDirections(const double* sol);
+    
     //void findHeuristicSolutions();
     //void objCutHeuristic();
     //void lowerObjHeuristic();

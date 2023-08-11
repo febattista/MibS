@@ -41,7 +41,21 @@ class MibSCutGenerator : public BlisConGenerator {
    
    /** Destructor **/
    ~MibSCutGenerator();
-   
+
+   /****************************************************************/
+   //  feb223
+   void generateKSwaps(std::vector<IMPROVING_DIRECTION> &feasID,
+                    IMPROVING_DIRECTION &improvingDir,
+                    int n, int k, int index, int size, 
+                    CoinPackedMatrix *&G2, double *&rhs, 
+                    double *&colLb, double *&colUb,
+                    double *&llSol, double *&uselessIneqs,
+                    bool &keepOn);
+
+   bool findImprovingDirectionLocalSearch(double *uselessIneqs, double *improvingDir,
+                                double *lpSol, bool &isTimeLimReached);
+
+   /****************************************************************/
    bool generateConstraints(BcpsConstraintPool &conPool);
 
    int addCut(BcpsConstraintPool &conPool,

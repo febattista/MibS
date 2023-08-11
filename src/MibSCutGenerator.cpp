@@ -21,6 +21,7 @@
 #include "MibSSolution.hpp"
 #include "MibSConstants.hpp"
 #include "MibSConfig.hpp"
+#include "MibSHelp.hpp"
 
 #include "BlisConGenerator.h"
 #include "BlisConstraint.h"
@@ -328,6 +329,10 @@ MibSCutGenerator::intersectionCuts(BcpsConstraintPool &conPool,
 	MibSBilevelFreeSetTypeISIC bilevelFreeSetType =
 	    static_cast<MibSBilevelFreeSetTypeISIC>
 	    (localModel_->MibSPar_->entry(MibSParams::bilevelFreeSetTypeISIC));
+
+  MibSImprovingDirectionType improvingDirectionType =
+	    static_cast<MibSImprovingDirectionType>
+	    (localModel_->MibSPar_->entry(MibSParams::improvingDirectionType));
 	
 	int useLinkingSolutionPool(localModel_->MibSPar_->entry
 		       (MibSParams::useLinkingSolutionPool));
@@ -608,7 +613,27 @@ MibSCutGenerator::intersectionCuts(BcpsConstraintPool &conPool,
 	        double *lowerLevelSol = new double[lCols];
 	        CoinZeroN(uselessIneqs, lRows);
 	        CoinZeroN(lowerLevelSol, lCols);
-	        if (!findLowerLevelSolImprovingDirectionIC(uselessIneqs, lowerLevelSol, lpSol)){
+          isTimeLimReached = false;
+          bool foundSolution(false);
+          if (improvingDirectionType == MibSImprovingDirectionTypeOptSol) {
+            foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, lowerLevelSol, lpSol,
+                                                        isTimeLimReached);
+            // for (i = 0; i < lCols; i++){
+            //   if (lowerLevelSol[i] > 0)
+            //   std::cout << i << " : " << lowerLevelSol[i] << " ";
+            // }
+            // std::cout << "\n";
+          } else 
+          if (improvingDirectionType == MibSImprovingDirectionTypeLocalSearch){
+            foundSolution = findImprovingDirectionLocalSearch(uselessIneqs, lowerLevelSol, lpSol,
+                                                        isTimeLimReached);
+          }
+	      if (!foundSolution){
+        delete [] uselessIneqs;
+		    delete [] lowerLevelSol;
+		    goto TERM_INTERSECTIONCUT;
+                }                   
+		if(isTimeLimReached == true){
 		    delete [] uselessIneqs;
 		    delete [] lowerLevelSol;
 		    goto TERM_INTERSECTIONCUT;
@@ -1457,8 +1482,8 @@ MibSCutGenerator::findLowerLevelSolImprovingDirectionIC(double *uselessIneqs, do
 	value = lpSol[colIndex];
 	nSolver->setColLower(i, ceil(origColLb[colIndex] - value -
                                       localModel_->etol_));
-        nSolver->setColUpper(i, floor(origColUb[colIndex] - value +
-                                     localModel_->etol_));
+  nSolver->setColUpper(i, floor(origColUb[colIndex] - value +
+                                localModel_->etol_));
     }
 
     remainingTime = timeLimit - localModel_->broker_->subTreeTimer().getTime();
@@ -1513,7 +1538,7 @@ MibSCutGenerator::findLowerLevelSolImprovingDirectionIC(double *uselessIneqs, do
 #endif
     }
 
-    //nSolver->writeLp("water");
+    // nSolver->writeLp("water");
     nSolver->branchAndBound();
 
     if(((feasCheckSolver == "SYMPHONY") && (sym_is_time_limit_reached
@@ -6558,4 +6583,349 @@ MibSCutGenerator::getLowerMatrices(bool getLowerConstCoefMatrix,
 	localModel_->setG2Matrix(matrixG2);
     }
 
+}
+
+void printDirection(IMPROVING_DIRECTION w){
+  std::cout << "-------------------\n";
+  for (int i = 0; i < w.idx.size(); i++){
+    std::cout << w.idx[i] << " : " << w.vals[i] << " ";
+  }
+  std::cout << "\n";
+  std::cout << "uselessIneqs: " << w.numIneqs << ", qual: " << w.quality << "\n";
+}
+
+void MibSCutGenerator::generateKSwaps(std::vector<IMPROVING_DIRECTION> &feasID,
+                    IMPROVING_DIRECTION &improvingDir,
+                    int n, int k, int index, int size,
+                    CoinPackedMatrix *&G2, double *&rhs, 
+                    double *&colLb, double *&colUb,
+                    double *&llSol, double *&uselessIneqs,
+                    bool &keepOn)
+{
+  if (!keepOn) return;
+
+  if (k == 0) 
+  {
+    double zerotol = 1e-7;
+    double quality(0.0);
+    int i, idx;
+    int lRows(localModel_->getLowerRowNum());
+    int lCols(localModel_->getLowerDim());
+    // CoinPackedMatrix *G2 = localModel_->getG2Matrix();
+
+    double *lObjCoeff(localModel_->getLowerObjCoeffs());
+    double lObjSense(localModel_->getLowerObjSense()); // 1 min; -1 max
+    double currObj(0.0);
+    // std::cout << "w: ";
+    // std::cout << "---------------\n";
+    // for (int i = 0; i < improvingDir.idx.size(); i++){
+    //     std::cout << improvingDir.idx[i] << " : " << improvingDir.vals[i] << " ";
+    // }
+    // std::cout << "\n";
+    for (i = 0; i < improvingDir.vals.size(); i++)
+    {
+      idx = improvingDir.idx[i];
+      currObj += lObjSense * lObjCoeff[idx] * improvingDir.vals[i];
+    }
+    // std::cout << "w Obj: ";
+    // std::cout << currObj << std::endl;
+    
+    if (currObj > -zerotol){ 
+      // std::cout << "is not improving!" << std::endl; 
+      return; 
+    }
+
+    for (i = 0; i < improvingDir.idx.size(); i++){
+      if (improvingDir.vals[i] < -llSol[improvingDir.idx[i]]){
+        // std::cout << "is infeasible! delta y < -y \n";
+        return;
+      }
+    }
+
+    for (i = 0; i < improvingDir.idx.size(); i++){
+      if ((improvingDir.vals[i] + llSol[improvingDir.idx[i]] - colUb[i] > zerotol) ||
+          (improvingDir.vals[i] + llSol[improvingDir.idx[i]] - colLb[i] < -zerotol)){
+          // std::cout << "is infeasible! variable bounds \n";
+          return;
+         }
+    }
+
+    double *lhs(new double[lRows]);
+    memset(lhs, 0, lRows * sizeof(double));
+    
+    const double* elem = G2->getElements();
+    const int* indices = G2->getIndices();
+
+    for (i = improvingDir.idx.size() - 1; i >= 0; --i){
+      const CoinBigIndex last = G2->getVectorLast(improvingDir.idx[i]);
+      for (CoinBigIndex j = G2->getVectorFirst(improvingDir.idx[i]); j < last; ++j)
+        lhs[indices[j]] += improvingDir.vals[i] * elem[j];
+    }
+    
+    for (i = 0; i < lRows; i++)
+    {
+      if (lhs[i] - rhs[i] > zerotol)
+      {
+        // std::cout << "is infeasible! \n";
+        delete[] lhs;
+        return; // w is infeasible
+      }
+    }
+    // w is feasible and improving
+    // std::cout << "is feasible!\n";
+    improvingDir.uselessIneqsIdx.clear();
+    improvingDir.uselessIneqsVals.clear();
+    improvingDir.uselessIneqsIdx.reserve(5);
+    improvingDir.uselessIneqsVals.reserve(5);
+
+    for (i = 0; i < lRows; i++){
+      if (lhs[i] > zerotol) {
+        improvingDir.uselessIneqsIdx.push_back(i);
+        improvingDir.uselessIneqsVals.push_back(lhs[i]);
+      } 
+    }
+
+    for (i = 0; i < improvingDir.vals.size(); i++){
+      if (improvingDir.vals[i] == 1) {
+        improvingDir.uselessIneqsIdx.push_back(improvingDir.idx[i] + lRows);
+        improvingDir.uselessIneqsVals.push_back(1);
+      }
+      else {
+        improvingDir.uselessIneqsIdx.push_back(improvingDir.idx[i] + lCols + lRows);
+        improvingDir.uselessIneqsVals.push_back(1);
+      }
+    }
+    
+    // Add in the list of feasible and improving directions
+    if (feasID.size() < 10) {
+      for (i = 0; i < improvingDir.uselessIneqsVals.size(); i++){
+        quality += improvingDir.uselessIneqsVals[i];
+      }
+      improvingDir.quality = quality;
+      improvingDir.numIneqs = improvingDir.uselessIneqsVals.size();
+      feasID.push_back(improvingDir);
+      quality = 0.0;
+      keepOn = true;  
+    } else {
+      keepOn = false;
+    }
+
+    delete[] lhs;
+
+    return;
+  }
+
+  for (int i = index; (i <= n - k) && keepOn; ++i) {
+    // Add non-zero element
+    improvingDir.idx.push_back(i);
+    improvingDir.vals.push_back(-1);
+    generateKSwaps(feasID, improvingDir, n, k - 1, i + 1, size, 
+                   G2, rhs, colLb, colUb,
+                   llSol, uselessIneqs, keepOn);
+    improvingDir.vals.pop_back();
+    improvingDir.vals.push_back(1);
+    generateKSwaps(feasID, improvingDir, n, k - 1, i + 1, size,
+                   G2, rhs, colLb, colUb,
+                   llSol, uselessIneqs, keepOn);
+    improvingDir.idx.pop_back();
+    improvingDir.vals.pop_back();
+  }
+  
+}
+
+bool MibSCutGenerator::findImprovingDirectionLocalSearch(
+                        double *uselessIneqs,
+                        double *improvingDir,
+                        double *lpSol, bool &isTimeLimReached)
+{
+
+  localModel_->cutStats.enumerated++;
+  int i, idx;
+  int MAX_feasID(100);
+  double zerotol(1e-7);
+  bool foundSolution(false);
+  int colIndex;
+  OsiSolverInterface *oSolver = localModel_->solver();
+  double infinity(oSolver->getInfinity());
+
+  int *lColIndices(localModel_->getLowerColInd());
+  int *lRowIndices = localModel_->getLowerRowInd();
+  int lCols(localModel_->getLowerDim());
+  int lRows(localModel_->getLowerRowNum());
+  double *llSol = new double[lCols];
+  double *lObjCoeff(localModel_->getLowerObjCoeffs());
+  double lObjSense(localModel_->getLowerObjSense()); // 1 min; -1 max
+  double *rhsLb = new double[lRows];
+  double *rhsUb = new double[lRows];
+  double *rhs = new double[lRows];
+  double *rowLb(localModel_->getOrigRowLb());
+  double *rowUb(localModel_->getOrigRowUb());
+  char *origRowSense(localModel_->getOrigRowSense());
+
+  double *origColLb(localModel_->getOrigColLb());
+  double *origColUb(localModel_->getOrigColUb());
+
+  double *currColLb = new double[lCols];
+	double *currColUb = new double[lCols];
+  
+
+  //filling col bounds
+  CoinZeroN(currColLb, lCols);
+	CoinFillN(currColUb, lCols, infinity);
+
+  for(i = 0; i < lCols; i++){
+    colIndex = lColIndices[i];
+    currColLb[i] = origColLb[colIndex] - lpSol[colIndex];
+    currColUb[i] = origColUb[colIndex] - lpSol[colIndex];
+    if(origColUb[colIndex] >  (infinity/10)){
+      currColUb[i] = infinity;
+    }
+	}
+
+  getLowerMatrices(true, false, true);
+  CoinPackedMatrix *G2 = localModel_->getG2Matrix();
+  CoinPackedMatrix *G2colOrd = new CoinPackedMatrix();
+  if (!G2->isColOrdered()){
+    G2colOrd->reverseOrderedCopyOf(*G2);
+  } else {
+    G2colOrd = G2;
+  }
+  // G2colOrd->dumpMatrix();
+  CoinPackedMatrix *A2G2 = localModel_->getLowerConstCoefMatrix(); // A2G2
+  double *AGxy = new double[lRows];
+  A2G2->times(lpSol, AGxy);
+
+  // LL constraints are always 'L'
+  // modify rhs accordingly
+  for (i = 0; i < lRows; i++)
+  {
+    idx = lRowIndices[i];
+    if (origRowSense[idx] == 'G'){
+
+      rhs[i] = -1 * rowLb[idx] - AGxy[i];
+
+    } else if (origRowSense[idx] == 'L') {
+
+      rhs[i] = rowUb[idx] - AGxy[i];
+
+    } else {
+      assert(0);
+    }
+  }
+
+  for (i = 0; i < lCols; i++){
+    idx = lColIndices[i];
+    llSol[i] = lpSol[idx];
+  }
+
+  std::vector<IMPROVING_DIRECTION> feasID;
+  feasID.reserve(MAX_feasID);
+
+  IMPROVING_DIRECTION ID;
+  ID.idx.reserve(3);
+  ID.vals.reserve(3);
+
+  int k(1);
+  bool keepOn(true);
+
+  // TODO: add check for the timeLimit
+  while(!foundSolution && k <= (3 <= lCols ? 3 : lCols)){
+    // std::cout << "k = " << k << std::endl;
+    generateKSwaps(feasID, ID, lCols, k, 0, k, 
+                   G2colOrd, rhs, currColLb, currColUb,
+                   llSol, uselessIneqs, keepOn);
+    foundSolution = (feasID.size() > 0);
+    k++;
+  }
+
+  // localModel_->bS_->checkImprovingDirections(lpSol);
+
+  // TODO: Add found improving directions to the ImprovingDirectionPool
+  // std::cout << feasID.size() << std::endl;
+  if (foundSolution){
+    std::sort(feasID.begin(), feasID.end());
+    // for (auto w : feasID){
+    //   std::cout << w.w << " ";
+    // }
+    ID = feasID[0];
+    
+    for (i = 0; i < ID.vals.size(); i++){
+      idx = ID.idx[i];
+      improvingDir[idx] = ID.vals[i];
+      // std::cout << idx << " : " << ID.vals[i] << " ";
+    }
+    // std::cout << "\n";
+    for (i = 0; i < ID.uselessIneqsIdx.size(); i++){
+      idx = ID.uselessIneqsIdx[i];
+      uselessIneqs[idx] = ID.uselessIneqsVals[i];
+    }
+    // for (i = 0; i < lRows + 2*lCols; i++){
+    //   uselessIneqs[i] = 1;
+    // }
+
+    // Add Feasible Improving Directions to seenImprovingDirections
+    // This part should be moved in MibSBilevel
+    int useImprovingDirPool = localModel_->MibSPar_->entry(
+          MibSParams::useImprovingDirectionPool);
+
+    if(useImprovingDirPool){
+      if (localModel_->seenImprovingDirections.size() < 
+          localModel_->maxImprovingDirectionSize){
+
+        for (auto &w : feasID){
+          localModel_->seenImprovingDirections.push_back(w);
+        }
+
+        int currSize = localModel_->seenImprovingDirections.size();
+        // std::cout << "Current size: " << currSize << "\n";
+        
+        std::sort(localModel_->seenImprovingDirections.begin(), 
+                  localModel_->seenImprovingDirections.end());
+
+        // std::cout << "=======================\n";
+        // std::cout << "Before - ImprovingDirectionPool\n";
+        // std::cout << "=======================\n";
+        // for (auto &w : localModel_->seenImprovingDirections){
+        //   printDirection(w);
+        // }
+
+        localModel_->seenImprovingDirections.erase(
+              std::unique(localModel_->seenImprovingDirections.begin(), 
+                          localModel_->seenImprovingDirections.end()), 
+                          localModel_->seenImprovingDirections.end());
+
+        int cleanSize = localModel_->seenImprovingDirections.size();
+        // std::cout << "New size: " << cleanSize << "\n";
+        // std::cout << "Cleaned " << (currSize - cleanSize) << " duplicates!\n";
+
+        // std::cout << "=======================\n";
+        // std::cout << "After - ImprovingDirectionPool\n";
+        // std::cout << "=======================\n";
+        // for (auto &w : localModel_->seenImprovingDirections){
+        //   printDirection(w);
+        // }
+
+        if (localModel_->seenImprovingDirections.size() > 
+            localModel_->maxImprovingDirectionSize) {
+          localModel_->seenImprovingDirections.resize(localModel_->maxImprovingDirectionSize);
+        }
+        // std::cout << "++++++++++++++++\n";
+      }
+    }
+    // std::cout << "Improving direction found with k = "<< (k - 1)  << "\n";
+    // std::cout << "Total Feas Improving directions: "<< feasID.size()  << "\n";
+  } else {
+    // std::cout << "No improving direction!\n";
+  }
+
+  delete[] AGxy;
+  delete[] rhsLb;
+  delete[] rhsUb;
+  delete[] llSol;
+  delete[] currColLb;
+  delete[] currColUb;
+  delete G2colOrd;
+
+
+  return foundSolution;
 }

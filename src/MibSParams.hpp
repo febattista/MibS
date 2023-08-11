@@ -72,6 +72,8 @@ class MibSParams : public AlpsParameterSet {
      bendersInterdictionCutType,
      useImprovingSolutionIC,
      useImprovingDirectionIC,
+     //  feb233
+     improvingDirectionType,
      useHypercubeIC,
      useTenderIC,
      useHybridIC,
@@ -87,6 +89,8 @@ class MibSParams : public AlpsParameterSet {
      computeBestUBWhenLVarsInt,
      computeBestUBWhenLVarsFixed,
      useLinkingSolutionPool,
+     //  feb223
+     useImprovingDirectionPool,
      newPureIntCutDepthLb,
      newPureIntCutDepthUb,
      boundCutOptimalType,
