@@ -6908,8 +6908,9 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
       if (localModel_->seenImprovingDirections.size() < 
           localModel_->maxImprovingDirectionSize){
 
-        for (auto &w : feasID){
-          localModel_->seenImprovingDirections.push_back(w);
+        for (std::vector<IMPROVING_DIRECTION>::iterator it = feasID.begin(); 
+              it != feasID.end(); ++it) {
+          localModel_->seenImprovingDirections.push_back(*it);
         }
 
         int currSize = localModel_->seenImprovingDirections.size();

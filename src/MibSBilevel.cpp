@@ -1206,13 +1206,13 @@ MibSBilevel::setUpModel(OsiSolverInterface *oSolver, bool newOsi,
 		/** Get upper bound from best known (feasible) lower level solution and
 		try to fix additional variables by sensitivity analysis **/
 
-		std::vector<std::pair<AlpsKnowledge *, double>> solutionPool;
+		std::vector<std::pair<AlpsKnowledge *, double> > solutionPool;
 		model_->getKnowledgeBroker()->getAllKnowledges(AlpsKnowledgeTypeSolution, solutionPool);
 
 		const double *sol;
 		double Ub(objSense * nSolver->getInfinity());
 		BlisSolution *blisSol;
-		std::vector<std::pair<AlpsKnowledge *, double>>::const_iterator si;
+		std::vector<std::pair<AlpsKnowledge *, double> >::const_iterator si;
 		for (si = solutionPool.begin(); si != solutionPool.end(); ++si)
 		{
 			blisSol = dynamic_cast<BlisSolution *>(si->first);
