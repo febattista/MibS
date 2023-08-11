@@ -15,8 +15,13 @@ instanceDirs = {
     #'INTERD-DEN': '/home/sat214/cutPaperMibS/dataPaper/interdDen',
     #'IBLP-DEN': '/home/sat214/cutPaperMibS/dataPaper/iblpDen',
     # 'IBLP-ZHANG': '/home/sat214/MIBS/ozaltinData/convertedData/Testbed1/'
-    'INTER-KP': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
-    'DENEGRE': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
+    'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
+    'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
+    'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
+    'ZHANG': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/ZHANG',
+    'INTER-KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
+    'KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/KP',
+    'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW'
     # 'SMALL': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/SMALL',
     # 'INTER-KP': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP'
 }
@@ -26,7 +31,7 @@ instanceDirs = {
 versions = ['1.2']
 
 # Output parent path
-outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
+outputDir = '/home/feb223/tests/improvingDir/output'
 
 # Name
 testname = 'mibs'

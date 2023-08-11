@@ -220,6 +220,8 @@ def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
             exe = '/home/ted/Projects/build-mibs-cplex-1.2/bin/mibs'
         if v == 'pr-92':
             exe = '/home/ted/Projects/build-mibs-pr-92/bin/mibs'
+        if v == 'improvingDir':
+            exe = '/home/feb223/improvingDir/build-MibS-opt/bin/mibs'
                 
         for scenario in params:
             for testset in instPaths:
@@ -264,6 +266,21 @@ def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
                                                     pbsfile])
                                 else:
                                     print("File", outfile, "exists!")
+                            elif instance.name.endswith('.mps.gz'):
+                                outfile = os.path.join(outsubpath, instance.name[:-7]+'.out')
+                                errfile = os.path.join(outsubpath, instance.name[:-7]+'.err')
+                                if not os.path.exists(outfile):
+                                    subprocess.run(["qsub", "-v", 
+                                                    "EXECUTABLE="+exe+","
+                                                    +"INSTANCENAME="+instance.path+","
+                                                    +"AUXNAME="+instance.path[:-4]+".aux"+","
+                                                    +"PARAMARG="+paramcmd,
+                                                    "-o", outfile,
+                                                    "-e", errfile,
+                                                    "-N", testname,
+                                                    pbsfile])
+                                else:
+                                    print("File", outfile, "exists!")
     return                    
 
 if __name__ == "__main__":
@@ -273,11 +290,11 @@ if __name__ == "__main__":
 
     ######################### Run Experimests #########################
     # local: provide paths in runparams.py
-    exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
-    runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
+    # exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
+    # runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
     
     # using pbs file: provide paths in runparams.py
-    # runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
+    runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
     
 
 
