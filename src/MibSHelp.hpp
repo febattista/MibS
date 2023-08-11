@@ -56,8 +56,8 @@ struct ID_STATISTICS {
     int enumerated;
     int fracCalls;
     int intCalls;
-    int fracCallFailed;
-    int intCallFailed;
+    int fracCallSuccess;
+    int intCallSuccess;
 };
 
 #endif

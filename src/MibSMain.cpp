@@ -96,6 +96,14 @@ int main(int argc, char* argv[])
       }else{
          std::cout << "Solver not invoked due to parameter settings. Exiting..."<< std::endl;
       }
+      broker.printBestSolution();
+
+      std::cout 
+         << "Improving direction integer calls " << model.cutStats.intCallSuccess 
+         << " successful out of " << model.cutStats.intCalls  << std::endl
+         << "Improving direction fractional calls " << model.cutStats.fracCallSuccess 
+         << " successful out of " << model.cutStats.fracCalls  << std::endl
+         << "================================================" << std::endl;
     }
     catch(CoinError& er) {
 	std::cerr << "ERROR:" << er.message() << std::endl
