@@ -46,12 +46,7 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
         "ll_int_var": "integer LL Variables",
         "num_cuts": "Called MIBS cut generator",
         "infeasible": "infeasible",
-        "int_idic" : "integer IDICs",
-        "int_lv_idic" : "integer (LV) IDICs",
-        "frac_idic" : "fractional IDICs",
-        #"int_idic_failed": "Integer IDIC cut generation failed:",
-        "int_lv_idic_failed": "cut generation failed (LV)",
-        "frac_idic_failed": "Fractional IDIC cut generation failed"
+        "chk_feas_time" : "Checking feasibility"
     }
 
     results = collections.defaultdict(list)
@@ -209,8 +204,9 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
                                         elif keywords['frac_idic_failed'] in line:
                                             results['num_frac_idic_fail'][-1]+=1
                                             results['cg_failed'][-1] += 1
-                                        # elif keywords[10] in line:
-                                        #    results['ul_int_var'].append(int(line.split(':')[1]))
+
+                                        elif keywords["chk_feas_time"] in line:
+                                           results['chk_feas_time'].append(float(line.split(' ')[-2]))
                                         #
                                         # elif keywords[11] in line:
                                         #    results['ll_int_var'].append(int(line.split(':')[1]))
@@ -468,6 +464,7 @@ def plotPerfProf(
     #print(df["virtual_best"])
     
     for col in col_list:
+        print(col_list)
         print(col)
         # for each col, compute ratio
         ratios = df[col] / df["virtual_best"]
@@ -844,167 +841,34 @@ def plotBaselineProfSingle(
 if __name__ == "__main__":
 
     dataSets = [
-        #'MIBLP-XU',
-        #"IBLP-FIS",
-        #'INTERD-DEN',
-        #'IBLP-DEN',
-        'IBLP-DEN2',
-        #'IBLP-ZHANG',
-        #'IBLP-ZHANG2',
-        #'all'
+        # 'MIBLP-XU',
+        # "IBLP-FIS",
+        # 'INTERD-DEN',
+        # 'IBLP-DEN',
+        # 'IBLP-ZHANG'
+        'DENEGRE',
+        # 'SMALL'
     ]
 
     # versions = ['1.1', 'ib']
     # versions = ["1.2-opt", "rev1"]
     # versions = ["1.2-opt", "1.2-opt-cplex"]
     # versions = ['1.2+newWS','1.2+5.6']
-    #versions = ['1.2-cplex-opt','1.2-opt','1.1-opt','1.0-opt']
-    #versions = ['1.2-opt','1.1-opt','1.0-opt','DenRal09']
-    #versions = ['1.1-opt','1.0-opt']
-    #versions = ['1.2-opt','1.1-opt','DenRal09']
-    #versions = ['1.2-opt','1.1-opt','1.0-opt']
-    #versions = ['1.2-opt','1.2-cplex-opt']
-    #versions = ['1.2-opt','1.2.0-opt']
-    #versions = ['tailoff','1.2.1-final']
-    #versions = ['1.2.1-opt','1.2-opt','1.2.0-opt']
-    #versions = ['1.2-opt']
-    versions = ['1.2.1-final','fischetti']
-    #versions = ['1.2.1-final2']
+    versions = ['1.2']
+    
     # Output parent path
-    outputDir = ["/home/ted/Projects/MibS/output"]
-    #outputDir = ["/home/ted/Projects/MibS/output-Mac"]
+    # outputDir = "/home/ted/Projects/MibS/output"
+    outputDir = "/Users/feb223/projects/coin/intersectionCuts/test/output"
 
     scenarios = {
-        ###### fischetti
-
-        #'default-fis-seq-no_mip_cuts': 'Default (no MIP cuts)',
-        #'default-fis-seq': 'Default',
-        #'default-fis': 'Default (parallel)',
-
-        ###### 1.2.1-final
-
-        'noCut' : "No Cuts (link)", 
-        #'fracISICType1-frac': 'Frac ISIC Type 1 (frac)',
-        #'fracISICType1-frac-every': 'Frac ISIC Type 1 (frac)',
-        'ISICType1-frac': 'ISIC Type 1 (frac)', ##########
-        #'ISICType1-frac-lv': 'ISIC Type 1 (frac-lv)',
-        #'fracISICType1-link': 'Frac ISIC Type 1 (link)',
-        #'ISICType1-link': 'ISIC Type 1 (link)',
-        #'ISICType1-link-lv': 'ISIC Type 1 (link-lv)',
-        #'fracISICType2-frac': 'Frac ISIC Type 2 (frac)',
-        #'ISICType2-frac': 'ISIC Type 2 (frac)',
-        #'fracISICType2-link': 'Frac ISIC Type 2 (link)',
-        #'ISICType2-link': 'ISIC Type 2 (link)',  ##########
-        'fracIDIC-frac': 'Frac IDIC (frac)',     ##########
-        'fracIDIC+MIP-frac': 'Frac IDIC + MIP (frac)',
-        #'IDIC-frac': 'IDIC (frac)',
-        #'IDIC+MIP-frac': 'IDIC + MIP (frac)',
-        #'fracIDIC-link': 'Frac IDIC (link)',
-        #'IDIC-link': 'IDIC (link)',
-        #'fracIDIC-ll': 'Frac IDIC (ll)',
-        #'hyper-link': 'Hypercube IC (link)',
-        'hyper-frac': 'Hypercube IC (frac)',    ##########
-        #'hyper-link-lv': 'Hypercube IC (link-lv)',
-        #'hyper-frac-lv': 'Hypercube IC (frac-lv)',
-        #'bendersInterdiction-frac': 'Benders Interdict (frac)',
-        #'bendersInterdiction+MIP-frac': 'Benders Interdict + MIP (frac)',
-        #'bendersInterdiction-link': 'Benders Interdict (link)',
-        #'bendersInterdiction+MIP-link': 'Benders Interdict + MIP (link)',
-        #'bendersBinary-frac': 'Benders Binary (frac)', ##########
-        #'bendersBinary-link': 'Benders Binary (link)',
-        #'bendersBinary-frac-lv': 'Benders Binary (frac-lv)',
-        #'bendersBinary-link-lv': 'Benders Binary (link-lv)',
-        #'genNoGood-frac': 'Generalized No Good (frac)', ##########
-        #'genNoGood-link': 'Generalized No Good (link)',
-        'intNoGood-frac': 'Integer No Good (frac)',
-        'intNoGood+MIP-frac': 'Integer No Good + MIP (frac)',
-        #'intNoGood-link': 'Integer No Good (link)', ##########
-        'fracIDIC+ISICType1-frac': 'fracIDIC + ISIC Type 1 (frac)',
-        #'fracIDIC+ISICType1-frac-lv': 'fracIDIC + ISIC Type 1 (frac-lv)',
-        #'fracIDIC+ISICType1-bendersBinary-frac': 'fracIDIC + ISIC Type 1 + bendersBin (frac)',
-        #'fracIDIC+ISICType1-bendersBinary-frac-lv': 'fracIDIC + ISIC Type 1 +bendersBin (frac-lv)',
-
-        ###### 1.2.1-opt
-
-        # 'IDIC' : 'IDIC (link)',
-        # 'ISICType1' : 'ISIC Type1 (link)',
-        # 'ISICType2' : 'ISIC Type2 (link)',
-        # 'ISICType2-frac' : '',
-        # 'ISICType2-frac-old' : '',
-        # 'ISICType2-old' : '',
-        # 'benders+fracidic' : 'Benders + FracIDIC (link)',
-        # 'benders+fracidic-frac' : 'Benders + Frac IDIC (frac)',
-        # 'benders+idic' : 'Benders + IDIC (link)',
-        # 'benders+idic-frac' : 'Benders + IDIC (frac)',
-        # 'default+NoFractionalCutsAndFrac' : 'No Frac Cuts (Frac)',
-        # 'default+NoFractionalCutsAndLinking' : 'No Frac Cuts (Linking)',
-        # 'default+frac' : 'Default (frac)',
-        # 'default+linking': 'Default (Linking)',
-        # 'fracIDIC' : 'Frac IDIC (link)',
-        # 'fracISICType2' : 'Frac ISIC Type2 (link)',
-        # 'fracISICType2-frac' : 'Frac ISIC Type2 (frac)',
-        # 'fracISICType2-frac-old' : 'Frac ISIC Type2 (frac)',
-        # 'genNoGood' : 'GenNoGood (link)',
-        # 'hyper' : 'Hypercube IC (link)',
-        # 'intNoGood' : 'IntNoGood (link)',
-
-        ###### 1.2.0-opt
-
-        # 'IDIC-frac' : 'IDIC (frac)',    
-        # 'IDIC+MIP-frac' : 'IDIC+MIP (frac)',
-        # 'IDIC+MIP2-frac' : 'IDIC+MIP2 (frac)',
-        # 'default+FracRoot' : 'Default+FracRoot',
-        # 'default+MIP' : "Default + MIP",
-        # 'default+NoFractionalCutsAndFrac' : 'No Frac Cuts (Frac)',
-        # 'default+NoFractionalCutsAndLinking' : 'No Frac Cuts (Linking)',
-        #'defaultWithExtraOutput' : 'Default',
-        #'default+NoFractionalCutswithExtraOutput' : 'No Frac Cuts',
-        # 'default+Parallel' : 'Default Parallel',
-        # 'default+frac' : 'Default (frac)',
-        # 'default+linking': 'Default (Linking)',
-        # "fracIDIC-frac" : 'Frac IDIC (frac)',
-        # "fracIDIC+MIP-frac" : 'FracIDIC+MIP (frac)',
-        # "fracIDIC+MIP2-frac" : 'FracIDIC+MIP2 (frac)',
-
-        ###### 1.2-opt
-
-        #'benders' : 'Benders Interdict (link)',
-        #'benders-cplex' : 'Benders Interdict CPLEX (link)',
-        #'benders-frac' : 'Benders Interdict (frac)',
-        #'benders-frac-cplex' : 'Benders Interdict CPLEX (frac)',
-        #'bound+hyper-cplex' : 'Bound Cut + Hypercube IC',
-        #'boundCut-cplex': 'Bound Cut + Hypercube IC CPLEX',
-        #'fracWatermelon' : 'Frac1 IDIC (link)',
-        #"fracWatermelon-frac" : 'Frac IDIC (frac)',
-        #"fracWatermelon-frac-cplex" : 'Frac IDIC CPLEX (frac)',
-        #"fracWatermelon-frac-cplex-d10" : 'Frac IDIC CPLEX d10 (frac)',
-        #"fracWatermelon-frac-cplex-d20" : 'Frac IDIC CPLEX d20 (frac)',
-        #"fracType1-frac-cplex" : 'Frac Type 1 CPLEX (frac)',
-        #"fracType1-frac-cplex-d10" : 'Frac Type 1 CPLEX d10 (frac)',
-        #"fracType1-frac-cplex-d20" : 'Frac Type 1 CPLEX d20 (frac)',
-        #'genNoGood': 'Generalized No Good (link)',
-        #'genNoGood-frac': 'Generalized No Good (frac)',
-        #'hyper': 'Hypercube IC (link)',
-        #'hyper-frac': 'Hypercube IC (frac)',
-        #"incObj" : "BendersBinary (link)",
-        #'incObj-frac' : "BendersBinary (frac)",
-        #'noCut' : "No Cuts (link)", 
-        #'noCut-WS' : "No Cuts (link+WS)", 
-        #'noCut-cplex' : "No Cuts CPLEX (link)", 
-        #'noGood+incObj' : 'GenNoGood+BendBin (link)',
-        #'noGood+type1+pureInteger' : 'GenNoGood+Type1+IntNoGood (link)',
-        #'pureInteger' : 'IntNoGood (link)',
-        #'pureInteger-frac' : 'IntNoGood (frac)',
-        #'strengthenedIntegerNoGoodCut-cplex': 'Strengthened Int No Good CPLEX',
-        #"type1" : 'ISIC1 Type1 (link)',
-        #"type1-cplex" : 'Type1 (link)',
-        #"type1-frac" : 'Type1 (frac)',
-        #'type1-WS' : 'Type1 (link+WS)',
-        #"type2" : "ISIC1 Type2 (link)",
-        #"type2-frac" : "ISIC1 Type2 (frac)",
-        #'watermelon' : 'Watermelon (link)',
-        #'watermelon-frac' : 'Watermelon (frac)',    
-        #"watermelon-frac-LV" : 'Watermelon (frac+LV)',
+        'kswaps' : 'kSwaps',
+        'kswaps+idp' : 'kSwaps+IDP',
+        'watermelon' : 'watermelon'
+        # 'default' : 'Default',
+        # 'default+WS' : 'Default w/ Warm Start',
+        # 'default-frac',
+        #'benders' : 'BendersInterdict (link)',
+        #'benders-frac' : 'BendersInterdict (frac)',
         #'watermelon+type1-frac' : 'Watermelon+Type1 (frac)',
         #'watermelon+type1-frac-LV' : 'Watermelon+Type1 (frac+LV)',
         #'watermelon+type1+incObj-frac' : "Watermelon+Type1+BendBin (frac)",
@@ -1062,29 +926,17 @@ if __name__ == "__main__":
         #'watermelon+type1-frac-LV' : 'Watermelon+Type1 (frac+LV)',
         #'watermelon-frac' : 'Watermelon (frac)',    
         #"watermelon-frac-LV" : 'Watermelon (frac+LV)',
-       
-        #'fracISICType1-frac-everyIteration': 'Frac ISIC Type 1 (frac-every)',
-        #'fracWatermelon-frac': 'Default(frac)',
-        #'default+frac-.1' : 'Default (frac, 0.1)',
-        #'default+frac-.5' : 'Default (frac, 0.5)',
-        #'default+frac-1' : 'Default (frac, 1)',
-        #'default+NoFractionalCuts' : 'No Frac Cuts (frac)',
-        #'default+NoFractionalCuts+Frac' : 'No Frac Cuts (frac)',
-        #'default+NoFractionalCuts+Frac-.1' : 'No Frac Cuts (frac, 0.1)',
-        #'default+Linking': 'Default (linking)',
-        #'default+Linking-.1': 'Default (linking, 0.1)',
-        #'default+Linking-.5': 'Default (linking, 0.5)',
-        #'default+Linking-1': 'Default (linking, 1)',
-        #'default+NoFractionalCuts+Linking' : 'No Frac Cuts (linking)',
-        #'default+WS' : 'Default w/ Warm Start',
-        # 'default-frac',
-        #'benders-frac' : 'BendersInterdict (frac)',
-        #'genNoGood-frac' : 'GenNoGood (frac)',
-        #'hyper-frac' : 'Hypercube (frac)',
-        #'IDIC' : 'Watermelon (link)',
-        #'fracidic+ll' : 'Frac IDIC (ll)',
-        #"ISICType2" : "ISIC Type2 (link)",
-        #"ISICType2-frac" : "ISIC Type2 (frac)",
+        #'fracWatermelon' : 'FracWatermelon (link)',
+        #"fracWatermelon-frac" : 'FracWatermelon (frac)',
+        #"fracWatermelon-frac-cplex" : 'FracWatermelon (frac)',
+        #"type1" : 'Type1 (link)',
+        #"type1-cplex" : 'Type1 (link)',
+        #"type1-frac" : 'Type1 (frac)',
+        #'type1-WS' : 'Type1 (link+WS)',
+        #"type2" : "Type2 (link)",
+        #"type2-frac" : "Type2 (frac)",
+        # 'noCut' : "No Cuts (link)", 
+        #'noCut-WS' : "No Cuts (link+WS)", 
         # 'interdiction',
     }
     ################# Process & Save | Load from CSV ###################
@@ -1122,20 +974,9 @@ if __name__ == "__main__":
         "root_gap": "Root Gap",
         "100_gap": "Gap After 100 Nodes",
         "solved": "Solved",
-        #"num_int_idic": "Int IDIC Success",
-        #"num_int_lv_idic": "Int IDIC (LV) Success",
-        #"num_frac_idic": "Frac IDIC Success",
-        #"num_int_lv_idic_fail": "Int IDIC (LV) Fail",
-        #"num_frac_idic_fail": "Frac IDIC Fail",
-        "cg_called": "CG Calls",
-        #"cg_failed": "CG Failures",
-        #"cg_fail_rate": "CG Failure Rate",
-        "num_cuts": "Number of Cuts",
-        #"depth_idic" : "Average Depth of IDIC",
-        #"num_idic" : "Number of IDIC",
-        #'chk_feas_time': 'Check Feasibility Time',
-        #'vf_solved': 'Number of VF problem solved',
-        #'ub_solved': 'Number of UB problem solved',
+        'chk_feas_time': 'Check Feasibility Time',
+        'vf_solved': 'Number of VF problem solved',
+        'ub_solved': 'Number of UB problem solved',
         'objval': 'Object Value'
     }
 
@@ -1144,16 +985,11 @@ if __name__ == "__main__":
     ################### Make Performance Profile ####################
     # columns to compare in the plot
     plotCols = {
-        "cpu": ["CPU Time", 25],
-        "nodes": ["Nodes Processed", 50],
-        #"root_gap": ["Root Gap", 10],
-        #"num_cuts": ["Number of Cuts", 50],
-        #"depth_idic" : ["Depth of IDICs", 10],
-        #"num_idic" : ["Number of IDICs", 10],
-        #'cg_called': ["CG Calls", 10],
-        #'cg_failed': ["CG Failures", 10],
-        #'cg_fail_rate': ['CG Failre Rate', 10],
-        #"100_gap": ["Gap After 100 Nodes", 10]
+        "cpu": ["CPU Time", 20],
+        "nodes": ["Nodes Processed", 25],
+        "chk_feas_time": ['Check Feasibility Time', 50],
+        "vf_solved": ['Number of VF problem solved', 50],
+        "ub_solved": ['Number of UB problem solved', 50]
     }
     # plotCols = {}
 
@@ -1181,6 +1017,7 @@ if __name__ == "__main__":
         
     for ds in dataSets:
         df_solved, df_has_soln = dropFilter(df_proc, scenarios, ds)
+        print(df_solved)
         for col in plotCols:
             if col != "root_gap":
                 df_sub = df_solved.xs(

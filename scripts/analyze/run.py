@@ -24,13 +24,13 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
     """
         Use to run experiments on local machine. 
     """
-    writeParams = False
+    writeParams = True
 
     # set up output directories
     # use hierarchy:  outDir/version/param_scenario_name/testset_name/
     for v in versions:
         for scenario in params:
-            # print(scenario)
+            print(scenario)
             currpath = os.path.join(outDir, v, scenario)
             if not os.path.exists(currpath):
                 os.mkdir(currpath)
@@ -47,7 +47,7 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
     # if choose to write params into files
     if writeParams:
         cwd = os.getcwd()
-        parampath = os.path.join(cwd, '../parameters')
+        parampath = os.path.join(outDir, 'parameters')
         if not os.path.exists(parampath):
             os.mkdir(parampath)
         
@@ -90,7 +90,36 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                                     outfile.close()
                                     print('Complete {} with gap {}'.format(instance.name, g))
                 else:
-                    pass # add alternative call information
+                    paramfile = os.path.join(paramsubpath1, scenario + '.par')
+                    # print(paramcmd)
+                    v = versions[0]
+                    outsubpath = os.path.join(outDir, v, scenario, testset)
+                    # print(outsubpath)
+                    
+                    os.chdir(outsubpath)
+                    with os.scandir(instPaths[testset]) as inst_it: 
+                        for instance in inst_it:
+                            # print(instance.name)
+                            if instance.name.endswith('.mps'):
+                                outname = instance.name[:-4]+'.out'
+                                outfile = open(outname,'w')
+                                subprocess.run([exe, "-param", paramfile,
+                                                "-Alps_instance", instance.path,
+                                                "-MibS_auxiliaryInfoFile", instance.path[:-4]+".aux",
+                                            ],
+                                                stdout=outfile)
+                                outfile.close()
+                                print('Complete {}'.format(instance.name))
+                            elif instance.name.endswith('.mps.gz'):
+                                outname = instance.name[:-7]+'.out'
+                                outfile = open(outname,'w')
+                                subprocess.run([exe, "-param", paramfile,
+                                                "-Alps_instance", instance.path,
+                                                "-MibS_auxiliaryInfoFile", instance.path[:-7]+".aux ",
+                                            ],
+                                                stdout=outfile)
+                                outfile.close()
+                                print('Complete {}'.format(instance.name))
         # remove paramter files created earlier?   
     else:
         # run experiments use command line paramters
@@ -118,7 +147,38 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                                         outfile.close()
                                         print('Complete {} with gap {}'.format(instance.name, g))
                     else:
-                        pass # add alternative call information
+                        # THIS IS THE PART OF CODE I'M RUNNING  <-----------------------------
+                        paramcmd = ' -'.join(' '.join(_) for _ in params[scenario].items())
+                        paramcmd = '' + paramcmd
+                        # print(paramcmd)
+                        outsubpath = os.path.join(outDir, v, scenario, testset)
+                        os.chdir(outsubpath)
+                        with os.scandir(instPaths[testset]) as inst_it: 
+                            for instance in inst_it:
+                                # print(instance.name)
+                                if instance.name.endswith('.mps'):
+                                    outname = instance.name[:-4]+'.out'
+                                    outfile = open(outname,'w')
+                                    subprocess.run([exe,
+                                                    "-Alps_instance", instance.path,
+                                                    "-MibS_auxiliaryInfoFile", instance.path[:-4]+".aux",
+                                                    paramcmd,
+                                                ],
+                                                    stdout=outfile)
+                                    outfile.close()
+                                    print('Complete {}'.format(instance.name))
+                                elif instance.name.endswith('.mps.gz'):
+                                    outname = instance.name[:-7]+'.out'
+                                    outfile = open(outname,'w')
+                                    subprocess.run([exe,
+                                                    "-Alps_instance", instance.path,
+                                                    "-MibS_auxiliaryInfoFile", instance.path[:-7]+".aux " + paramcmd,
+                                                    
+                                                ],
+                                                    stdout=outfile)
+                                    outfile.close()
+                                    print('Complete {}'.format(instance.name))
+
     return
 
 def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
@@ -213,10 +273,11 @@ if __name__ == "__main__":
 
     ######################### Run Experimests #########################
     # local: provide paths in runparams.py
-    # runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs, gaps)
+    exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
+    runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
     
     # using pbs file: provide paths in runparams.py
-    runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
+    # runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
     
 
 
