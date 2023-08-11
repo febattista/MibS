@@ -204,7 +204,7 @@ MibSModel::initialize()
   //bindingMethod_ = "BASIS"; //FIXME: should make this a parameter
   MibSPar_ = new MibSParams;
   //maxAuxCols_ = 0; //FIXME: should make this a parameter
-  maxImprovingDirectionSize = 1000;  // make this a parameter
+  maxImprovingDirectionSize = 200;  // make this a parameter
   seenImprovingDirections.reserve(maxImprovingDirectionSize);
 }
 
@@ -3929,6 +3929,7 @@ MibSModel::adjustParameters()
                     << "matrix.";
           std::cout << std::endl;
           MibSPar()->setEntry(MibSParams::useImprovingDirectionIC, PARAM_OFF);
+          assert(0);
        }
        if (isLowerObjInt_ == false){
           std::cout << "The improving direction intersection cut is only valid "
@@ -3936,6 +3937,7 @@ MibSModel::adjustParameters()
                     << "coefficients.";
           std::cout << std::endl;
           MibSPar()->setEntry(MibSParams::useImprovingDirectionIC, PARAM_OFF);
+          assert(0);
        }
     }
     if (MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_ON){
