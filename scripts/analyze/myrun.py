@@ -4,7 +4,7 @@
 # Apr 2020
 
 # Executable path and name
-pbsfile = '/home/ted/Projects/MibS/scripts/analyze/mibs_batch.pbs'
+pbsfile = '/home/feb223/improvingDir/MibS/scripts/analyze/mibs_batch.pbs'
 
 # Instance path
 # Directory name and path containing test instances in .mps format
@@ -15,20 +15,18 @@ instanceDirs = {
     #'INTERD-DEN': '/home/sat214/cutPaperMibS/dataPaper/interdDen',
     #'IBLP-DEN': '/home/sat214/cutPaperMibS/dataPaper/iblpDen',
     # 'IBLP-ZHANG': '/home/sat214/MIBS/ozaltinData/convertedData/Testbed1/'
-    'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
-    'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
-    'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
-    'ZHANG': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/ZHANG',
+    #'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
     'INTER-KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
+    'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
     'KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/KP',
-    'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW'
-    # 'SMALL': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/SMALL',
-    # 'INTER-KP': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP'
+    'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW',
+    'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
+    'ZHANG': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/ZHANG'
 }
 
 #versions = ['1.1', 'ib']
 #versions = ['1.2-opt']
-versions = ['1.2']
+versions = ['improvingDir']
 
 # Output parent path
 outputDir = '/home/feb223/tests/improvingDir/output'

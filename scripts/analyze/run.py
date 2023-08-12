@@ -273,7 +273,7 @@ def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
                                     subprocess.run(["qsub", "-v", 
                                                     "EXECUTABLE="+exe+","
                                                     +"INSTANCENAME="+instance.path+","
-                                                    +"AUXNAME="+instance.path[:-4]+".aux"+","
+                                                    +"AUXNAME="+instance.path[:-7]+".aux"+","
                                                     +"PARAMARG="+paramcmd,
                                                     "-o", outfile,
                                                     "-e", errfile,

@@ -46,7 +46,9 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
         "ll_int_var": "integer LL Variables",
         "num_cuts": "Called MIBS cut generator",
         "infeasible": "infeasible",
-        "chk_feas_time" : "Checking feasibility"
+        "chk_feas_time" : "Checking feasibility",
+	"int_cuts" : "Improving direction integer calls",
+	"frac_cuts": "Improving direction fractional calls"
     }
 
     results = collections.defaultdict(list)
@@ -215,6 +217,15 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
                                             results["num_cuts"][-1] = int(line.split(" ")[8])
                                             results["cut_time"][-1] = float(line.split(" ")[12])
                                             results["cg_called"][-1] = float(line.split(" ")[5])
+					
+					elif keywords["int_cuts"] in line:
+					    results["int_cuts_tot"].append(int(line.split(' ')[-1])
+					    results["int_cut_succ"].append(int(line.split(' ')[-5])
+
+					elif keyworks["frac_cuts"] in line:
+					    results["frac_cuts_tot"].append(int(line.split(' ')[-1])
+					    results["frac_cuts_succ"].append(int(line.split(' ')[-5])
+
                                         elif keywords["infeasible"] in line:
                                             print("Infeasible instance!")
                                         elif 'STAT;' in line and len(line.split(';')) > 6:
@@ -847,6 +858,7 @@ if __name__ == "__main__":
         # 'IBLP-DEN',
         # 'IBLP-ZHANG'
         'DENEGRE',
+        'INTER-KP',
         # 'SMALL'
     ]
 
@@ -854,15 +866,16 @@ if __name__ == "__main__":
     # versions = ["1.2-opt", "rev1"]
     # versions = ["1.2-opt", "1.2-opt-cplex"]
     # versions = ['1.2+newWS','1.2+5.6']
-    versions = ['1.2']
+    versions = ['improvingDir']
     
     # Output parent path
     # outputDir = "/home/ted/Projects/MibS/output"
-    outputDir = "/Users/feb223/projects/coin/intersectionCuts/test/output"
+    outputDir = "/home/feb223/tests/improvingDir/output"
 
     scenarios = {
         'kswaps' : 'kSwaps',
         'kswaps+idp' : 'kSwaps+IDP',
+	'watermelon+IDP' : 'watermelon+IDP',
         'watermelon' : 'watermelon'
         # 'default' : 'Default',
         # 'default+WS' : 'Default w/ Warm Start',
@@ -977,7 +990,9 @@ if __name__ == "__main__":
         'chk_feas_time': 'Check Feasibility Time',
         'vf_solved': 'Number of VF problem solved',
         'ub_solved': 'Number of UB problem solved',
-        'objval': 'Object Value'
+        'objval': 'Object Value',
+	'int_cuts_tot' : 'Integer IDIC calls',
+	'int_cuts_succ': 'Successful Integer IDIC calls'
     }
 
     df_proc = processTable(df_r, displayCols, writeLTX=False, filename=file_txt)
