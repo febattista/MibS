@@ -47,8 +47,8 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
         "num_cuts": "Called MIBS cut generator",
         "infeasible": "infeasible",
         "chk_feas_time" : "Checking feasibility",
-	"int_cuts" : "Improving direction integer calls",
-	"frac_cuts": "Improving direction fractional calls"
+        "int_cuts" : "Improving direction integer calls",
+        "frac_cuts": "Improving direction fractional calls"
     }
 
     results = collections.defaultdict(list)
@@ -218,13 +218,13 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
                                             results["cut_time"][-1] = float(line.split(" ")[12])
                                             results["cg_called"][-1] = float(line.split(" ")[5])
 					
-					elif keywords["int_cuts"] in line:
-					    results["int_cuts_tot"].append(int(line.split(' ')[-1])
-					    results["int_cut_succ"].append(int(line.split(' ')[-5])
+                                        elif keywords["int_cuts"] in line:
+                                            results["int_cuts_tot"].append(int(line.split(' ')[-1]))
+                                            results["int_cut_succ"].append(int(line.split(' ')[-5]))
 
-					elif keyworks["frac_cuts"] in line:
-					    results["frac_cuts_tot"].append(int(line.split(' ')[-1])
-					    results["frac_cuts_succ"].append(int(line.split(' ')[-5])
+                                        elif keywords["frac_cuts"] in line:
+                                            results["frac_cuts_tot"].append(int(line.split(' ')[-1]))
+                                            results["frac_cuts_succ"].append(int(line.split(' ')[-5]))
 
                                         elif keywords["infeasible"] in line:
                                             print("Infeasible instance!")
@@ -875,7 +875,7 @@ if __name__ == "__main__":
     scenarios = {
         'kswaps' : 'kSwaps',
         'kswaps+idp' : 'kSwaps+IDP',
-	'watermelon+IDP' : 'watermelon+IDP',
+	    'watermelon+IDP' : 'watermelon+IDP',
         'watermelon' : 'watermelon'
         # 'default' : 'Default',
         # 'default+WS' : 'Default w/ Warm Start',
@@ -991,8 +991,10 @@ if __name__ == "__main__":
         'vf_solved': 'Number of VF problem solved',
         'ub_solved': 'Number of UB problem solved',
         'objval': 'Object Value',
-	'int_cuts_tot' : 'Integer IDIC calls',
-	'int_cuts_succ': 'Successful Integer IDIC calls'
+	    'int_cuts_tot' : 'Integer IDIC calls',
+	    'int_cuts_succ': 'Successful Integer IDIC calls',
+        'frac_cuts_tot' : 'Fractional IDIC calls',
+	    'frac_cuts_succ': 'Successful Fractional IDIC calls'
     }
 
     df_proc = processTable(df_r, displayCols, writeLTX=False, filename=file_txt)
