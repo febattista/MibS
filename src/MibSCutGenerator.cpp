@@ -610,26 +610,35 @@ MibSCutGenerator::intersectionCuts(BcpsConstraintPool &conPool,
         case MibSIntersectionCutImprovingDirection:
 	    {
 		double *uselessIneqs = new double[lRows + 2 * lCols];
-	        double *lowerLevelSol = new double[lCols];
-	        CoinZeroN(uselessIneqs, lRows);
-	        CoinZeroN(lowerLevelSol, lCols);
-          isTimeLimReached = false;
-          bool foundSolution(false);
-          if (improvingDirectionType == MibSImprovingDirectionTypeOptSol) {
-            foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, lowerLevelSol, lpSol,
-                                                        isTimeLimReached);
-            // for (i = 0; i < lCols; i++){
-            //   if (lowerLevelSol[i] > 0)
-            //   std::cout << i << " : " << lowerLevelSol[i] << " ";
-            // }
-            // std::cout << "\n";
-          } else 
-          if (improvingDirectionType == MibSImprovingDirectionTypeLocalSearch){
-            foundSolution = findImprovingDirectionLocalSearch(uselessIneqs, lowerLevelSol, lpSol,
-                                                        isTimeLimReached);
-          }
-	      if (!foundSolution){
-        delete [] uselessIneqs;
+    double *lowerLevelSol = new double[lCols];
+    CoinZeroN(uselessIneqs, lRows + 2 * lCols);
+    CoinZeroN(lowerLevelSol, lCols);
+		isTimeLimReached = false;
+    bool foundSolution(false);
+    if (improvingDirectionType == MibSImprovingDirectionTypeOptSol) {
+      // if(localModel_->countIteration_ <= 199){
+      foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, lowerLevelSol, lpSol);
+      // std::cout << "Watermelon\n";
+      // for (i = 0; i < lCols; i++){
+        // if (lowerLevelSol[i] != 0)
+        // std::cout << i << " : " << lowerLevelSol[i] << " ";
+      // }
+      // std::cout << "\n";
+    } else 
+    if (improvingDirectionType == MibSImprovingDirectionTypeLocalSearch){
+      // if(localModel_->countIteration_ <= 199){
+        // CoinZeroN(lowerLevelSol, lCols);
+      foundSolution = findImprovingDirectionLocalSearch(uselessIneqs, lowerLevelSol, lpSol,
+                                                   isTimeLimReached);
+      // std::cout << "k-Swaps\n";
+      // for (i = 0; i < lCols; i++){
+        // if (lowerLevelSol[i] != 0)
+        // std::cout << i << " : " << lowerLevelSol[i] << " ";
+      // }
+      // std::cout << "\n";
+    }
+ 	        if (!foundSolution){
+		    delete [] uselessIneqs;
 		    delete [] lowerLevelSol;
 		    goto TERM_INTERSECTIONCUT;
                 }                   
@@ -1565,16 +1574,14 @@ MibSCutGenerator::findLowerLevelSolImprovingDirectionIC(double *uselessIneqs, do
                 MibSParams::useImprovingDirectionPool);
       
       if (useImprovingDirectionPool && foundSolution){
+        int maxIDSize = localModel_->MibSPar_->entry(
+                MibSParams::maxImprovingDirectionPoolSize);
         if (localModel_->seenImprovingDirections.size() < 
-            localModel_->maxImprovingDirectionSize){
+            maxIDSize){
           double zerotol(1e-7);
           IMPROVING_DIRECTION w;
-          w.idx.reserve(5);
-          w.vals.reserve(5);
-          w.uselessIneqsIdx.reserve(10);
-          w.uselessIneqsVals.reserve(10);
           for (i = 0; i < lCols; i++){
-            if (lowerLevelSol[i] > zerotol){
+            if (lowerLevelSol[i] != zerotol){
               w.idx.push_back(i);
               w.vals.push_back(lowerLevelSol[i]);
             }
@@ -6642,6 +6649,7 @@ void MibSCutGenerator::generateKSwaps(std::vector<IMPROVING_DIRECTION> &feasID,
 
   if (k == 0) 
   {
+    int maxFeasIDs = localModel_->MibSPar_->entry(MibSParams::maxFeasImprovingDirections);
     double zerotol = 1e-7;
     double quality(0.0);
     int i, idx;
@@ -6679,8 +6687,10 @@ void MibSCutGenerator::generateKSwaps(std::vector<IMPROVING_DIRECTION> &feasID,
     }
 
     for (i = 0; i < improvingDir.idx.size(); i++){
-      if ((improvingDir.vals[i] + llSol[improvingDir.idx[i]] - colUb[i] > zerotol) ||
-          (improvingDir.vals[i] + llSol[improvingDir.idx[i]] - colLb[i] < -zerotol)){
+      if ((improvingDir.vals[i] + llSol[improvingDir.idx[i]] 
+          - colUb[improvingDir.idx[i]] > zerotol ) ||
+          (improvingDir.vals[i] + llSol[improvingDir.idx[i]] 
+          - colLb[improvingDir.idx[i]] < -zerotol)){
           // std::cout << "is infeasible! variable bounds \n";
           return;
          }
@@ -6733,7 +6743,7 @@ void MibSCutGenerator::generateKSwaps(std::vector<IMPROVING_DIRECTION> &feasID,
     }
     
     // Add in the list of feasible and improving directions
-    if (feasID.size() < 10) {
+    if (feasID.size() < maxFeasIDs) {
       for (i = 0; i < improvingDir.uselessIneqsVals.size(); i++){
         quality += improvingDir.uselessIneqsVals[i];
       }
@@ -6861,43 +6871,71 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
   ID.idx.reserve(3);
   ID.vals.reserve(3);
 
-  int k(1);
+  int k(1), max_k(localModel_->MibSPar_->entry(
+            MibSParams::maxEnumerationLocalSearch));
   bool keepOn(true);
 
+
   // TODO: add check for the timeLimit
-  while(!foundSolution && k <= (3 <= lCols ? 3 : lCols)){
-    // std::cout << "k = " << k << std::endl;
+  while(!foundSolution && k <= max_k){
+
     generateKSwaps(feasID, ID, lCols, k, 0, k, 
                    G2colOrd, rhs, currColLb, currColUb,
                    llSol, uselessIneqs, keepOn);
+    
     foundSolution = (feasID.size() > 0);
     k++;
   }
 
-  // localModel_->bS_->checkImprovingDirections(lpSol);
+  int branchPar = localModel_->MibSPar_->entry(MibSParams::branchStrategy);
 
-  // TODO: Add found improving directions to the ImprovingDirectionPool
-  // std::cout << feasID.size() << std::endl;
+  if (!foundSolution && 
+      (((branchPar == MibSBranchingStrategyLinking) && 
+        (localModel_->bS_->isLinkVarsFixed_)) ||
+      ((branchPar == MibSBranchingStrategyFractional))) && 
+        (localModel_->bS_->isIntegral_)) {
+      // This point MUST be separated so call the TypeOptSol 
+      // if TypeLocalSearch failed
+      std::cout << "Local search failed! Trying Watermelon...\n";
+      foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, 
+                        improvingDir, lpSol, isTimeLimReached);
+      
+      if (foundSolution) {
+        IMPROVING_DIRECTION w;
+        for (i = 0; i < lCols; i++){
+          if (improvingDir[i] != zerotol){
+            w.idx.push_back(i);
+            w.vals.push_back(improvingDir[i]);
+          }
+        }
+
+        for (i = 0; i < lRows + 2 * lCols; i++){
+          if (uselessIneqs[i] > zerotol){
+            w.uselessIneqsIdx.push_back(i);
+            w.uselessIneqsVals.push_back(uselessIneqs[i]);
+          }
+        }
+        feasID.push_back(w);
+      } else {
+        // This case should never happen
+        assert(0);
+      }
+  }
+
   if (foundSolution){
     std::sort(feasID.begin(), feasID.end());
-    // for (auto w : feasID){
-    //   std::cout << w.w << " ";
-    // }
+
     ID = feasID[0];
     
     for (i = 0; i < ID.vals.size(); i++){
       idx = ID.idx[i];
       improvingDir[idx] = ID.vals[i];
-      // std::cout << idx << " : " << ID.vals[i] << " ";
     }
-    // std::cout << "\n";
+
     for (i = 0; i < ID.uselessIneqsIdx.size(); i++){
       idx = ID.uselessIneqsIdx[i];
       uselessIneqs[idx] = ID.uselessIneqsVals[i];
     }
-    // for (i = 0; i < lRows + 2*lCols; i++){
-    //   uselessIneqs[i] = 1;
-    // }
 
     // Add Feasible Improving Directions to seenImprovingDirections
     // This part should be moved in MibSBilevel
@@ -6905,55 +6943,34 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
           MibSParams::useImprovingDirectionPool);
 
     if(useImprovingDirPool){
-      if (localModel_->seenImprovingDirections.size() < 
-          localModel_->maxImprovingDirectionSize){
+      // std::cout << "Curr: " << localModel_->seenImprovingDirections.size() << "\n";
+      int maxIDSize = localModel_->MibSPar_->entry(
+          MibSParams::maxImprovingDirectionPoolSize);
+      if (localModel_->seenImprovingDirections.size() < maxIDSize){
 
         for (std::vector<IMPROVING_DIRECTION>::iterator it = feasID.begin(); 
               it != feasID.end(); ++it) {
           localModel_->seenImprovingDirections.push_back(*it);
         }
 
-        int currSize = localModel_->seenImprovingDirections.size();
-        // std::cout << "Current size: " << currSize << "\n";
+        // std::cout << "Before: " << localModel_->seenImprovingDirections.size() << "\n";
         
         std::sort(localModel_->seenImprovingDirections.begin(), 
                   localModel_->seenImprovingDirections.end());
 
-        // std::cout << "=======================\n";
-        // std::cout << "Before - ImprovingDirectionPool\n";
-        // std::cout << "=======================\n";
-        // for (auto &w : localModel_->seenImprovingDirections){
-        //   printDirection(w);
-        // }
-
         localModel_->seenImprovingDirections.erase(
-              std::unique(localModel_->seenImprovingDirections.begin(), 
-                          localModel_->seenImprovingDirections.end()), 
-                          localModel_->seenImprovingDirections.end());
+            std::unique(localModel_->seenImprovingDirections.begin(), 
+                        localModel_->seenImprovingDirections.end()), 
+                        localModel_->seenImprovingDirections.end());
 
-        int cleanSize = localModel_->seenImprovingDirections.size();
-        // std::cout << "New size: " << cleanSize << "\n";
-        // std::cout << "Cleaned " << (currSize - cleanSize) << " duplicates!\n";
+        // std::cout << "After: " << localModel_->seenImprovingDirections.size() << "\n";
 
-        // std::cout << "=======================\n";
-        // std::cout << "After - ImprovingDirectionPool\n";
-        // std::cout << "=======================\n";
-        // for (auto &w : localModel_->seenImprovingDirections){
-        //   printDirection(w);
-        // }
-
-        if (localModel_->seenImprovingDirections.size() > 
-            localModel_->maxImprovingDirectionSize) {
-          localModel_->seenImprovingDirections.resize(localModel_->maxImprovingDirectionSize);
+        if (localModel_->seenImprovingDirections.size() > maxIDSize) {
+          localModel_->seenImprovingDirections.resize(maxIDSize);
         }
-        // std::cout << "++++++++++++++++\n";
       }
     }
-    // std::cout << "Improving direction found with k = "<< (k - 1)  << "\n";
-    // std::cout << "Total Feas Improving directions: "<< feasID.size()  << "\n";
-  } else {
-    // std::cout << "No improving direction!\n";
-  }
+  } 
 
   delete[] AGxy;
   delete[] rhsLb;

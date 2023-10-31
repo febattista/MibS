@@ -198,6 +198,18 @@ MibSParams::createKeywordList() {
    // feb233
    keys_.push_back(make_pair(std::string("MibS_improvingDirectionType"),
               AlpsParameter(AlpsIntPar, improvingDirectionType)));
+   
+   keys_.push_back(make_pair(std::string("MibS_maxEnumerationLocalSearch"),
+              AlpsParameter(AlpsIntPar, maxEnumerationLocalSearch)));
+   
+   keys_.push_back(make_pair(std::string("MibS_maxFeasImprovingDirections"),
+              AlpsParameter(AlpsIntPar, maxFeasImprovingDirections)));
+   
+   keys_.push_back(make_pair(std::string("MibS_useImprovingDirectionPool"),
+              AlpsParameter(AlpsIntPar, useImprovingDirectionPool)));
+   
+   keys_.push_back(make_pair(std::string("MibS_maxImprovingDirectionPoolSize"),
+              AlpsParameter(AlpsIntPar, maxImprovingDirectionPoolSize)));
 
    keys_.push_back(make_pair(std::string("MibS_useFractionalCuts"),
 			     AlpsParameter(AlpsIntPar, useFractionalCuts)));
@@ -207,10 +219,6 @@ MibSParams::createKeywordList() {
                                            useFractionalCutsRootOnly)));
 
    //solve lower-level Parameters
-   // feb233
-   keys_.push_back(make_pair(std::string("MibS_useImprovingDirectionPool"),
-              AlpsParameter(AlpsIntPar, useImprovingDirectionPool)));
-
    keys_.push_back(make_pair(std::string("MibS_solveSecondLevelEveryIteration"),
 			     AlpsParameter(AlpsIntPar, solveSecondLevelEveryIteration)));
 
@@ -398,7 +406,15 @@ MibSParams::setDefaultEntries() {
 
    setEntry(bilevelFreeSetTypeISIC, MibSBilevelFreeSetTypeISICWithLLOptSol);
 
-   setEntry(improvingDirectionType, MibSImprovingDirectionTypeOptSol);
+   // feb223
+
+   setEntry(improvingDirectionType, MibSImprovingDirectionTypeNotSet);
+
+   setEntry(maxEnumerationLocalSearch, PARAM_NOTSET);
+
+   setEntry(maxFeasImprovingDirections, PARAM_NOTSET);
+
+   //====================================================
 
    setEntry(solveSecondLevelEveryIteration, PARAM_NOTSET);
 
@@ -417,6 +433,14 @@ MibSParams::setDefaultEntries() {
    setEntry(computeBestUBWhenLVarsFixed, PARAM_ON);
 
    setEntry(useLinkingSolutionPool, PARAM_ON);
+
+   // feb223
+
+   setEntry(useImprovingDirectionPool, PARAM_NOTSET);
+
+   setEntry(maxImprovingDirectionPoolSize, PARAM_NOTSET);
+
+   //====================================================
 
    setEntry(newPureIntCutDepthLb, -1);
 

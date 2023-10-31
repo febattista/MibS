@@ -171,6 +171,15 @@ MibSSolution::print(std::ostream& os) const
       std::cout << "Number of problems (UB) solved = " << localModel_->counterUB_ << std::endl;
       std::cout << "Time for solving problem (VF) = " << localModel_->timerVF_ << std::endl;
       std::cout << "Time for solving problem (UB) = " << localModel_->timerUB_ << std::endl;
+      
+      if (localModel_->MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_ON) {
+         std::cout 
+         << "================================================" << std::endl
+         << "Improving direction integer calls " << localModel_->cutStats.intCallSuccess 
+         << " successful out of " << localModel_->cutStats.intCalls  << std::endl
+         << "Improving direction fractional calls " << localModel_->cutStats.fracCallSuccess 
+         << " successful out of " << localModel_->cutStats.fracCalls  << std::endl;
+      }   
    }
 }
 

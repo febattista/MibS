@@ -319,7 +319,8 @@ MibSBilevel::checkBilevelFeasibility(bool isRoot)
 	isProvenOptimal_ = true;
 
 	// Look into the seenImprovingDirection first
-	if (useImprovingDirectionPool)
+	// If Linking Vars are fixed, then solve the SL and UB anyway
+	if (useImprovingDirectionPool && !isLinkVarsFixed_)
 	{
 		if(!(shouldSolveLower = checkImprovingDirections(sol))){
 			isLowerSolved_ = false;

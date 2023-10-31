@@ -36,16 +36,15 @@ struct IMPROVING_DIRECTION {
     double numIneqs;
     
     bool operator<(const IMPROVING_DIRECTION& other) const {
-        if (numIneqs == other.numIneqs)
-            return quality < other.quality;
-        else
+        if (idx.size() != other.idx.size())
+            return idx.size() < other.idx.size();
+        if ((idx == other.idx) && (vals == other.vals))
+            return true;
+        if (numIneqs != other.numIneqs)
             return numIneqs < other.numIneqs;
+        else
+            return quality < other.quality;
     }
-
-    bool compareDirections(const IMPROVING_DIRECTION& me, 
-                              const IMPROVING_DIRECTION& other){
-        return me.idx.size() < other.idx.size();
-    }  
 
     bool operator==(const IMPROVING_DIRECTION& other) const {
         return (idx == other.idx) && (vals == other.vals);
