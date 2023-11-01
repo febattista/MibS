@@ -768,7 +768,7 @@ MibSTreeNode::process(bool isRoot, bool rampUp)
 		lpStatus = static_cast<BlisLpStatus> 
 		    (generateConstraints(model, newConPool));
 
-#if 1
+#if 0
         std::cout << "++++ Cut generation ended: "
                   << "Improving Direction Found: " 
                   << (mibsModel->improvingDirectionFound ? "YES" : "NO")
@@ -776,13 +776,14 @@ MibSTreeNode::process(bool isRoot, bool rampUp)
         std::cout << "++++ Integer solution: "
                   << (mibsModel->bS_->isIntegral_ ? "YES" : "NO")
                   << std::endl;
+#endif
         if (!mibsModel->improvingDirectionFound && mibsModel->bS_->isIntegral_){
             std::cout << "++++ Solution Bilevel Feasible!\n";
             model->feasibleSolution(numIntInfs, numObjInfs);
         }
 
+        
         mibsModel->isCutGenerationDone = false;
-#endif
 
 		if(bS->shouldPrune_){
 		    setStatus(AlpsNodeStatusFathomed);

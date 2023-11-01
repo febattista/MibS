@@ -18,22 +18,23 @@ instanceDirs = {
     # 'INTER-KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
     # 'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
     # 'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
-    # 'DENEGRE': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
+    'DENEGRE': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
     # 'INTER-KP': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
     # 'INT0SUM': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
     # 'KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/KP',
     # 'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW',
     # 'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
-    'ZHANG': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/ZHANG'
+    # 'ZHANG': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/ZHANG'
 }
 
 #versions = ['1.1', 'ib']
 #versions = ['1.2-opt']
-versions = ['ipco', '1.2']
+# versions = ['ipco', '1.2']
+versions = ['ipco']
 
 # Output parent path
-outputDir = '/home/feb223/tests/improvingDir/output'
-# outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
+# outputDir = '/home/feb223/tests/improvingDir/output'
+outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
 
 # Name
 testname = 'mibs'
@@ -45,31 +46,31 @@ commonParams = {
     'Alps_timeLimit': '3600',
     'Alps_msgLevel': '1',
     # 'Alps_nodeLimit': '0',
-    'Blis_scaleConFactor': '10000000000',
-    'Blis_heurStrategy': '0',             # -2: root, -1: auto, 0: disable, any positive integer
-    'Blis_heurRound': '0',                # -2: root, -1: auto, 0: disable, any positive integer
-    'MibS_usePreprocessor': '0',          # -1: auto, 0: false, 1: true
-    'MibS_useLowerObjHeuristic': '0',     # -1: auto, 0: false, 1: true
-    'MibS_useObjCutHeuristic': '0',       # -1: auto, 0: false, 1: true
-    'MibS_useWSHeuristic': '0',           # -1: auto, 0: false, 1: true
-    'MibS_useGreedyHeuristic': '0',       # 0: false, 1: true
-    'MibS_objBoundStrategy': '0',         # 0: LL obj bound, 1: interdiction bound
-    'MibS_blisCutStrategy': '0',         # -2: root, -1: auto, 0: disable, any positive integer
+    # 'Blis_scaleConFactor': '10000000000',
+    # 'Blis_heurStrategy': '0',             # -2: root, -1: auto, 0: disable, any positive integer
+    # 'Blis_heurRound': '0',                # -2: root, -1: auto, 0: disable, any positive integer
+    # 'MibS_usePreprocessor': '0',          # -1: auto, 0: false, 1: true
+    # 'MibS_useLowerObjHeuristic': '0',     # -1: auto, 0: false, 1: true
+    # 'MibS_useObjCutHeuristic': '0',       # -1: auto, 0: false, 1: true
+    # 'MibS_useWSHeuristic': '0',           # -1: auto, 0: false, 1: true
+    # 'MibS_useGreedyHeuristic': '0',       # 0: false, 1: true
+    # 'MibS_objBoundStrategy': '0',         # 0: LL obj bound, 1: interdiction bound
+    # 'MibS_blisCutStrategy': '0',         # -2: root, -1: auto, 0: disable, any positive integer
 #    'MibS_warmStartLL': '0',
-    'MibS_maxThreadsLL': '1',
-    'MibS_allowRemoveCut': '0',           # 0: false, 1: true
-    'MibS_whichCutsLL': '2',              # 0: no cuts, 1: gomory only, 2: all cuts
-    'MibS_doDualFixing': '0',
+    # 'MibS_maxThreadsLL': '1',
+    # 'MibS_allowRemoveCut': '0',           # 0: false, 1: true
+    # 'MibS_whichCutsLL': '2',              # 0: no cuts, 1: gomory only, 2: all cuts
+    # 'MibS_doDualFixing': '0',
     'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
 #    'MibS_feasCheckSolver': 'SYMPHONY',
-    'MibS_solveSecondLevelWhenXYVarsInt': '1',
+    'MibS_solveSecondLevelWhenXYVarsInt': '0',
     'MibS_solveSecondLevelWhenXVarsInt': '0',
-    'MibS_solveSecondLevelWhenLVarsFixed': '1',
+    'MibS_solveSecondLevelWhenLVarsFixed': '0',
     'MibS_computeBestUBWhenXVarsInt': '0',
     'MibS_computeBestUBWhenLVarsInt': '0',
-    'MibS_computeBestUBWhenLVarsFixed': '1',
-    'MibS_useLinkingSolutionPool': '1',
-    # 'MibS_printParameters': '1'
+    'MibS_computeBestUBWhenLVarsFixed': '0',
+    'MibS_useLinkingSolutionPool': '0',
+    'MibS_printParameters': '1'
 } 
 
 mibsParamsInputs['IDIC'] = {
@@ -80,7 +81,7 @@ mibsParamsInputs['IDIC'] = {
     'MibS_improvingDirectionType': '1',
     'MibS_maxEnumerationLocalSearch': '3',
     'MibS_useFractionalCuts': '1',
-    'MibS_useImprovingDirectionPool': '1'
+    'MibS_useImprovingDirectionPool': '0'
 }
 
 # mibsParamsInputs['kSwaps+IDP_fracB'] = {

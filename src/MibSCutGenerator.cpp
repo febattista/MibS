@@ -6900,7 +6900,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
         (localModel_->bS_->isIntegral_)) {
       // This point MUST be separated so call the TypeOptSol 
       // if TypeLocalSearch failed
-      std::cout << "Local search failed! Trying Watermelon...\n";
+      // std::cout << "Local search failed! Trying Watermelon...\n";
       foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, 
                         improvingDir, lpSol, isTimeLimReached);
       
