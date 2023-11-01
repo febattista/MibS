@@ -24,11 +24,14 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
     """
         Use to run experiments on local machine. 
     """
-    writeParams = True
+    writeParams = False
 
     # set up output directories
     # use hierarchy:  outDir/version/param_scenario_name/testset_name/
     for v in versions:
+        currpath = os.path.join(outDir, v)
+        if not os.path.exists(currpath):
+            os.mkdir(currpath)
         for scenario in params:
             print(scenario)
             currpath = os.path.join(outDir, v, scenario)
@@ -124,8 +127,8 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
     else:
         # run experiments use command line paramters
         for v in versions:
-            for scenario in params:
-                for testset in instPaths:
+            for testset in instPaths:
+                for scenario in params:
                     if gaps: 
                         for g in gaps:
                             paramcmd = ' -'.join(' '.join(_) for _ in params[scenario].items())
@@ -162,8 +165,7 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                                     subprocess.run([exe,
                                                     "-Alps_instance", instance.path,
                                                     "-MibS_auxiliaryInfoFile", instance.path[:-4]+".aux",
-                                                    paramcmd,
-                                                ],
+                                                ]+paramcmd.split(),
                                                     stdout=outfile)
                                     outfile.close()
                                     print('Complete {}'.format(instance.name))
@@ -172,9 +174,8 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                                     outfile = open(outname,'w')
                                     subprocess.run([exe,
                                                     "-Alps_instance", instance.path,
-                                                    "-MibS_auxiliaryInfoFile", instance.path[:-7]+".aux " + paramcmd,
-                                                    
-                                                ],
+                                                    "-MibS_auxiliaryInfoFile", instance.path[:-7]+".aux ",
+                                                ]+paramcmd.split(),
                                                     stdout=outfile)
                                     outfile.close()
                                     print('Complete {}'.format(instance.name))
@@ -223,8 +224,8 @@ def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
         if v == 'improvingDir':
             exe = '/home/feb223/improvingDir/build-MibS-opt/bin/mibs'
                 
-        for scenario in params:
-            for testset in instPaths:
+        for testset in instPaths:
+            for scenario in params:
                 paramcmd = ' -'.join(' '.join(_) for _ in params[scenario].items())
                 if gaps: 
                     for g in gaps:
@@ -290,11 +291,11 @@ if __name__ == "__main__":
 
     ######################### Run Experimests #########################
     # local: provide paths in runparams.py
-    # exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
-    # runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
+    exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
+    runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
     
     # using pbs file: provide paths in runparams.py
-    runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
+    # runExperimentsPBS(instanceDirs, outputDir, versions, mibsParamsInputs, pbsfile)
     
 
 

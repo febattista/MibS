@@ -15,21 +15,25 @@ instanceDirs = {
     #'INTERD-DEN': '/home/sat214/cutPaperMibS/dataPaper/interdDen',
     #'IBLP-DEN': '/home/sat214/cutPaperMibS/dataPaper/iblpDen',
     # 'IBLP-ZHANG': '/home/sat214/MIBS/ozaltinData/convertedData/Testbed1/'
-    #'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
-    'INTER-KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
-    'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
-    'KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/KP',
-    'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW',
-    'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
-    'ZHANG': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/ZHANG'
+    # 'INTER-KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
+    # 'DENEGRE': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
+    # 'INT0SUM': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
+    # 'DENEGRE': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
+    # 'INTER-KP': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP',
+    # 'INT0SUM': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
+    # 'KP': '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/KP',
+    # 'CCLW':  '/home/feb223/improvingDir/MibS/Data/BOBILIB/interdiction/knapsack-interdiction/CCLW',
+    # 'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
+    'ZHANG': '/Users/feb223/projects/coin/intersectionCuts/Data/BOBILIB/general-bilevel/purely-integer/ZHANG'
 }
 
 #versions = ['1.1', 'ib']
 #versions = ['1.2-opt']
-versions = ['improvingDir']
+versions = ['1.2']
 
 # Output parent path
-outputDir = '/home/feb223/tests/improvingDir/output'
+# outputDir = '/home/feb223/tests/improvingDir/output'
+outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
 
 # Name
 testname = 'mibs'
@@ -56,7 +60,7 @@ commonParams = {
     'MibS_allowRemoveCut': '0',           # 0: false, 1: true
     'MibS_whichCutsLL': '2',              # 0: no cuts, 1: gomory only, 2: all cuts
     'MibS_doDualFixing': '0',
-    'MibS_branchStrategy': '1',
+    'MibS_branchStrategy': '0',           # 0: fractional, 1: linking
 #    'MibS_feasCheckSolver': 'SYMPHONY',
     'MibS_solveSecondLevelWhenXYVarsInt': '1',
     'MibS_solveSecondLevelWhenXVarsInt': '0',
@@ -65,20 +69,21 @@ commonParams = {
     'MibS_computeBestUBWhenLVarsInt': '0',
     'MibS_computeBestUBWhenLVarsFixed': '1',
     'MibS_useLinkingSolutionPool': '1',
-    'MibS_printParameters': '1'
+    # 'MibS_printParameters': '1'
 }   
 
-mibsParamsInputs['kSwaps+IDP'] = {
+mibsParamsInputs['kSwaps+IDP_fracB'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
     'MibS_useImprovingSolutionIC': '0',
     'MibS_useImprovingDirectionIC': '1',
     'MibS_improvingDirectionType': '1',
+    'MibS_maxEnumerationLocalSearch': '3',
     'MibS_useFractionalCuts': '1',
     'MibS_useImprovingDirectionPool': '1'
 }
 
-mibsParamsInputs['watermelon+IDP'] = {
+mibsParamsInputs['watermelon+IDP_fracB'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
     'MibS_useImprovingSolutionIC': '0',
@@ -88,23 +93,25 @@ mibsParamsInputs['watermelon+IDP'] = {
     'MibS_useImprovingDirectionPool': '1'
 }
 
-mibsParamsInputs['kSwaps'] = {
+mibsParamsInputs['kSwaps_fracB'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
     'MibS_useImprovingSolutionIC': '0',
     'MibS_useImprovingDirectionIC': '1',
     'MibS_improvingDirectionType': '1',
+    'MibS_maxEnumerationLocalSearch': '3',
     'MibS_useFractionalCuts': '1',
-    'MibS_useImprovingDirectionPool': '1'
+    'MibS_useImprovingDirectionPool': '0'
 }
 
-mibsParamsInputs['watermelon'] = {
+mibsParamsInputs['watermelon_fracB'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
     'MibS_useImprovingSolutionIC': '0',
     'MibS_useImprovingDirectionIC': '1',
     'MibS_improvingDirectionType': '0',
-    'MibS_useFractionalCuts': '1'
+    'MibS_useFractionalCuts': '1',
+    'MibS_useImprovingDirectionPool': '0'   
 }
 
 # mibsParamsInputs['default'] = {

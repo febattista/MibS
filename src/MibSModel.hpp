@@ -335,6 +335,10 @@ private:
     //std::map<std::vector<double>, LINKING_SOLUTION>::iterator it;
 
     std::vector<IMPROVING_DIRECTION> seenImprovingDirections;
+
+    // feb223
+    bool improvingDirectionFound = false;
+    bool isCutGenerationDone = false;
     
 public:
 

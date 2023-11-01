@@ -5883,6 +5883,8 @@ MibSCutGenerator::bendersZeroSumCuts(BcpsConstraintPool &conPool)
 bool 
 MibSCutGenerator::generateConstraints(BcpsConstraintPool &conPool)
 {
+  // feb223
+  localModel_->improvingDirectionFound = false;
 
   //FIXME: MAKE THIS MORE SIMPLE
   int numCuts(0);
@@ -6785,6 +6787,8 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
                         double *lpSol, bool &isTimeLimReached)
 {
 
+  localModel_->isCutGenerationDone = true;
+
   localModel_->cutStats.enumerated++;
   int i, idx;
   int MAX_feasID(100);
@@ -6875,7 +6879,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
             MibSParams::maxEnumerationLocalSearch));
   bool keepOn(true);
 
-
+  // max_k = 0;
   // TODO: add check for the timeLimit
   while(!foundSolution && k <= max_k){
 
@@ -6917,8 +6921,8 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
         }
         feasID.push_back(w);
       } else {
-        // This case should never happen
-        assert(0);
+        foundSolution = false;
+        // assert(0);
       }
   }
 
@@ -6980,6 +6984,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
   delete[] currColUb;
   delete G2colOrd;
 
+  localModel_->improvingDirectionFound = foundSolution;
 
   return foundSolution;
 }

@@ -316,17 +316,27 @@ MibSBilevel::checkBilevelFeasibility(bool isRoot)
 	}
     }
 
-	isProvenOptimal_ = true;
-
-	// Look into the seenImprovingDirection first
-	// If Linking Vars are fixed, then solve the SL and UB anyway
-	if (useImprovingDirectionPool && !isLinkVarsFixed_)
+	// If cut generation is done and improving direction was found
+	// solution is bilevel feasible
+	if (model_->isCutGenerationDone && 
+		!model_->improvingDirectionFound && isIntegral_)
 	{
-		if(!(shouldSolveLower = checkImprovingDirections(sol))){
-			isLowerSolved_ = false;
-			isProvenOptimal_ = false;
-		}
+		isLowerSolved_ = true;
+		isProvenOptimal_ = true;
+		shouldPrune_ = true;
+		storeSol = MibSHeurSol;
+	} else {
+		isLowerSolved_ = false;
+		isProvenOptimal_ = false;
+		storeSol = MibSNoSol;
 	}
+
+	if (model_->isCutGenerationDone){
+		model_->isCutGenerationDone = false;
+		model_->countIteration_--;
+	}
+
+	goto TERM_CHECKBILEVELFEAS;
 
 	if (shouldSolveLower && !isContainedInLinkingPool_)
 	{
