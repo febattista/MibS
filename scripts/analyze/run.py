@@ -223,6 +223,10 @@ def runExperimentsPBS(instPaths, outDir, versions, params, pbsfile, gaps=[]):
             exe = '/home/ted/Projects/build-mibs-pr-92/bin/mibs'
         if v == 'improvingDir':
             exe = '/home/feb223/improvingDir/build-MibS-opt/bin/mibs'
+        if v == 'ipco':
+            exe = '/home/feb223/improvingDir/build-ipco-opt/bin/mibs'
+        if v == '1.2':
+            exe = '/home/feb223/improvingDir/build-1.2-opt/bin/mibs'
                 
         for testset in instPaths:
             for scenario in params:

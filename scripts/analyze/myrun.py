@@ -29,11 +29,11 @@ instanceDirs = {
 
 #versions = ['1.1', 'ib']
 #versions = ['1.2-opt']
-versions = ['1.2']
+versions = ['ipco', '1.2']
 
 # Output parent path
-# outputDir = '/home/feb223/tests/improvingDir/output'
-outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
+outputDir = '/home/feb223/tests/improvingDir/output'
+# outputDir = '/Users/feb223/projects/coin/intersectionCuts/test/output'
 
 # Name
 testname = 'mibs'
@@ -70,9 +70,9 @@ commonParams = {
     'MibS_computeBestUBWhenLVarsFixed': '1',
     'MibS_useLinkingSolutionPool': '1',
     # 'MibS_printParameters': '1'
-}   
+} 
 
-mibsParamsInputs['kSwaps+IDP_fracB'] = {
+mibsParamsInputs['IDIC'] = {
     'MibS_turnOffDefaultCuts': '1',
     'MibS_useIntersectionCut': '1',
     'MibS_useImprovingSolutionIC': '0',
@@ -83,36 +83,47 @@ mibsParamsInputs['kSwaps+IDP_fracB'] = {
     'MibS_useImprovingDirectionPool': '1'
 }
 
-mibsParamsInputs['watermelon+IDP_fracB'] = {
-    'MibS_turnOffDefaultCuts': '1',
-    'MibS_useIntersectionCut': '1',
-    'MibS_useImprovingSolutionIC': '0',
-    'MibS_useImprovingDirectionIC': '1',
-    'MibS_improvingDirectionType': '0',
-    'MibS_useFractionalCuts': '1',
-    'MibS_useImprovingDirectionPool': '1'
-}
+# mibsParamsInputs['kSwaps+IDP_fracB'] = {
+#     'MibS_turnOffDefaultCuts': '1',
+#     'MibS_useIntersectionCut': '1',
+#     'MibS_useImprovingSolutionIC': '0',
+#     'MibS_useImprovingDirectionIC': '1',
+#     'MibS_improvingDirectionType': '1',
+#     'MibS_maxEnumerationLocalSearch': '3',
+#     'MibS_useFractionalCuts': '1',
+#     'MibS_useImprovingDirectionPool': '1'
+# }
 
-mibsParamsInputs['kSwaps_fracB'] = {
-    'MibS_turnOffDefaultCuts': '1',
-    'MibS_useIntersectionCut': '1',
-    'MibS_useImprovingSolutionIC': '0',
-    'MibS_useImprovingDirectionIC': '1',
-    'MibS_improvingDirectionType': '1',
-    'MibS_maxEnumerationLocalSearch': '3',
-    'MibS_useFractionalCuts': '1',
-    'MibS_useImprovingDirectionPool': '0'
-}
+# mibsParamsInputs['watermelon+IDP_fracB'] = {
+#     'MibS_turnOffDefaultCuts': '1',
+#     'MibS_useIntersectionCut': '1',
+#     'MibS_useImprovingSolutionIC': '0',
+#     'MibS_useImprovingDirectionIC': '1',
+#     'MibS_improvingDirectionType': '0',
+#     'MibS_useFractionalCuts': '1',
+#     'MibS_useImprovingDirectionPool': '1'
+# }
 
-mibsParamsInputs['watermelon_fracB'] = {
-    'MibS_turnOffDefaultCuts': '1',
-    'MibS_useIntersectionCut': '1',
-    'MibS_useImprovingSolutionIC': '0',
-    'MibS_useImprovingDirectionIC': '1',
-    'MibS_improvingDirectionType': '0',
-    'MibS_useFractionalCuts': '1',
-    'MibS_useImprovingDirectionPool': '0'   
-}
+# mibsParamsInputs['kSwaps_fracB'] = {
+#     'MibS_turnOffDefaultCuts': '1',
+#     'MibS_useIntersectionCut': '1',
+#     'MibS_useImprovingSolutionIC': '0',
+#     'MibS_useImprovingDirectionIC': '1',
+#     'MibS_improvingDirectionType': '1',
+#     'MibS_maxEnumerationLocalSearch': '3',
+#     'MibS_useFractionalCuts': '1',
+#     'MibS_useImprovingDirectionPool': '0'
+# }
+
+# mibsParamsInputs['watermelon_fracB'] = {
+#     'MibS_turnOffDefaultCuts': '1',
+#     'MibS_useIntersectionCut': '1',
+#     'MibS_useImprovingSolutionIC': '0',
+#     'MibS_useImprovingDirectionIC': '1',
+#     'MibS_improvingDirectionType': '0',
+#     'MibS_useFractionalCuts': '1',
+#     'MibS_useImprovingDirectionPool': '0'   
+# }
 
 # mibsParamsInputs['default'] = {
 #     'MibS_branchStrategy': '1',           # 0: fractional, 1: linking
