@@ -339,6 +339,7 @@ private:
     // feb223
     bool improvingDirectionFound = false;
     bool isCutGenerationDone = false;
+    bool isBilevelAlreadyCreated = false;
     
 public:
 

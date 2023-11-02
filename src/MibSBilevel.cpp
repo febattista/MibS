@@ -324,7 +324,7 @@ MibSBilevel::checkBilevelFeasibility(bool isRoot)
 		isLowerSolved_ = true;
 		isProvenOptimal_ = true;
 		shouldPrune_ = true;
-		storeSol = MibSHeurSol;
+		storeSol = MibSRelaxationSol;
 	} else {
 		isLowerSolved_ = false;
 		isProvenOptimal_ = false;

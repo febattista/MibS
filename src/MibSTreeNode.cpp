@@ -784,6 +784,7 @@ MibSTreeNode::process(bool isRoot, bool rampUp)
 
         
         mibsModel->isCutGenerationDone = false;
+        mibsModel->isBilevelAlreadyCreated = false;
 
 		if(bS->shouldPrune_){
 		    setStatus(AlpsNodeStatusFathomed);
