@@ -626,6 +626,9 @@ MibSCutGenerator::intersectionCuts(BcpsConstraintPool &conPool,
       // std::cout << "\n";
     } else 
     if (improvingDirectionType == MibSImprovingDirectionTypeLocalSearch){
+      if(localModel_->countIteration_ == 77136){
+        std::cout << "Stop here!\n";
+      }
       // if(localModel_->countIteration_ <= 199){
         // CoinZeroN(lowerLevelSol, lCols);
       foundSolution = findImprovingDirectionLocalSearch(uselessIneqs, lowerLevelSol, lpSol,

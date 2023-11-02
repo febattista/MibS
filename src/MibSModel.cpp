@@ -2389,7 +2389,7 @@ MibSModel::userFeasibleSolution(const double * solution, bool &userFeasible)
 				this);
   }
   else if(solType == MibSHeurSol){
-      if(!bS_->isUBSolved_){
+      if(!bS_->isUBSolved_ && !isCutGenerationDone){
 	  isHeurSolution = checkUpperFeasibility(lpSolution);
       }
       if(isHeurSolution == true){

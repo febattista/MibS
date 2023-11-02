@@ -322,7 +322,6 @@ MibSBilevel::checkBilevelFeasibility(bool isRoot)
 		!model_->improvingDirectionFound && isIntegral_)
 	{
 		isLowerSolved_ = true;
-		isUBSolved_ = true;
 		isProvenOptimal_ = true;
 		shouldPrune_ = true;
 		storeSol = MibSHeurSol;
