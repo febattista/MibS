@@ -98,7 +98,6 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                     v = versions[0]
                     outsubpath = os.path.join(outDir, v, scenario, testset)
                     # print(outsubpath)
-                    
                     os.chdir(outsubpath)
                     with os.scandir(instPaths[testset]) as inst_it: 
                         for instance in inst_it:
@@ -150,7 +149,11 @@ def runExperiments(exe, instPaths, outDir, versions, params, gaps=[]):
                                         outfile.close()
                                         print('Complete {} with gap {}'.format(instance.name, g))
                     else:
-                        # THIS IS THE PART OF CODE I'M RUNNING  <-----------------------------
+                        if scenario == 'MIBS':
+                            exe = '/home/federico/Scrivania/coin/improvingDir/build-1.2-opt/bin/mibs'
+                        if scenario == 'idB&C-IDIC':
+                            exe = '/home/federico/Scrivania/coin/improvingDir/build-ipco-opt/bin/mibs'
+                        print(exe)
                         paramcmd = ' -'.join(' '.join(_) for _ in params[scenario].items())
                         paramcmd = '' + paramcmd
                         # print(paramcmd)
@@ -295,7 +298,8 @@ if __name__ == "__main__":
 
     ######################### Run Experimests #########################
     # local: provide paths in runparams.py
-    exe = '/Users/feb223/projects/coin/intersectionCuts/build-MibS-opt/bin/mibs'
+    # exe = '/home/federico/Scrivania/coin/improvingDir/build-ipco-opt/bin/mibs'
+    exe = '/home/federico/Scrivania/coin/improvingDir/build-1.2-opt/bin/mibs'
     runExperiments(exe, instanceDirs, outputDir, versions, mibsParamsInputs)
     
     # using pbs file: provide paths in runparams.py

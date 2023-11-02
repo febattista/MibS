@@ -219,13 +219,13 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
                                             results["cut_time"][-1] = float(line.split(" ")[12])
                                             results["cg_called"][-1] = float(line.split(" ")[5])
 					
-                                        elif keywords["int_cuts"] in line:
-                                            results["int_cuts_tot"].append(int(line.split(' ')[-1]))
-                                            results["int_cuts_succ"].append(int(line.split(' ')[-5]))
+                                        # elif keywords["int_cuts"] in line:
+                                        #     results["int_cuts_tot"].append(int(line.split(' ')[-1]))
+                                        #     results["int_cuts_succ"].append(int(line.split(' ')[-5]))
 
-                                        elif keywords["frac_cuts"] in line:
-                                            results["frac_cuts_tot"].append(int(line.split(' ')[-1]))
-                                            results["frac_cuts_succ"].append(int(line.split(' ')[-5]))
+                                        # elif keywords["frac_cuts"] in line:
+                                        #     results["frac_cuts_tot"].append(int(line.split(' ')[-1]))
+                                        #     results["frac_cuts_succ"].append(int(line.split(' ')[-5]))
 
                                         elif keywords["infeasible"] in line:
                                             print("Infeasible instance!")
@@ -270,60 +270,15 @@ def parseOutput(outputDir, versions, scenarios, writeCSV=True, filename="summary
                                     if (opt_values[results["instance"][-1]] == np.inf):
                                         opt_values[results["instance"][-1]] = results["objval"][-1]
                                     elif opt_values[results["instance"][-1]] != results["objval"][-1]:
-<<<<<<< HEAD
-                                        print("************ Warning: objective values don't agree!")
-                                        print("************ ",
-                                              results["instance"][-1],
-                                              opt_values[results["instance"][-1]],
-                                              ' != ',
-                                              results["objval"][-1])
-                                        
-=======
                                         print("[%s] Warning: objective values don't agree!" % (results["instance"][-1]))
-                                
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
+
                                 if results["cpu"][-1] < 0.01:
-                                    print ("Small value! ", results["cpu"][-1], results["instance"][-1])
-                                    #results["cpu"][-1] = .01
-                                if results['depth_idic'][-1] == 0:
-                                    results['depth_idic'][-1] = 0.1
-                                a = [len(results[k]) for k in results]
-                                b = [k for k in results]
-                                for i in range(len(a)):
-                                    if a[i] != a[0]:
-                                        print(o_entry.path+"!!!!!!!!!!!!!", b[i])
-                                    
-                                    
-    #for k in results:
-    #   print (k)
-    #   print(len(results[k]))
-    #print (results['num_frac_idic'])
-    #print (results['num_int_idic'])
-    #print (results['num_idic'])
-    #print (results['depth_idic'])
-    #print(results['root_bound'])
-    #print(results['instance'])
-    for i in range(len(results["instance"])):
-        if results['cg_called'][i] > 0:
-            results['cg_fail_rate'][i] = results['cg_failed'][i]/results['cg_called'][i]
-        if (opt_values[results["instance"][i]] not in [0, np.inf] and
-            results['root_bound'][i] != 10000000):
-            results["root_gap"].append(round(100*abs((opt_values[results["instance"][i]] -
-                                                      results["root_bound"][i])/opt_values[results["instance"][i]]),
-                                                     2))
-        else:
-            results["root_gap"].append(100000)
-        #print(results["instance"][i], results["scenario"][i],
-        #      results["root_bound"][i], opt_values[results["instance"][i]])
-        if (opt_values[results["instance"][i]] not in [0, np.inf] and
-            results['100_bound'][i] != 10000000):
-            results["100_gap"].append(round(100*abs((opt_values[results["instance"][i]] -
-                                                     results["100_bound"][i])/opt_values[results["instance"][i]]),
-                                                     2))
-        else:
-            results["100_gap"].append(100000)
-        #print(results["instance"][i], results["scenario"][i],
-        #      results["100_bound"][i], opt_values[results["instance"][i]])
+                                    print ("Bad value! ", results["cpu"][-1])
+                                    results["cpu"][-1] = .01
+
+    for k in results:
+      print (k)
+      print(len(results[k]))
     df_result = pd.DataFrame(results)
 
     # make some adjustment to formats
@@ -435,11 +390,6 @@ def dropFilter(df, scenarios, ds):
     #print(drop_small_time)
     #print(drop_unsolved)
     df_solved = df.drop(drop_list_time)
-<<<<<<< HEAD
-    #print(df_solved)
-=======
-    # print(df_solved)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
 
     df_gap = df.xs(
         (ds, "gap"), level=["datasets", "fields"], axis=1, drop_level=True
@@ -449,11 +399,6 @@ def dropFilter(df, scenarios, ds):
     #drop_list_gap.extend(["cap6000-0.100000","cap6000-0.500000","cap6000-0.900000"])
     #print(drop_list_gap)
     df_has_soln = df.drop(drop_list_gap)
-<<<<<<< HEAD
-    #print(df_has_soln)
-=======
-    # print(df_has_soln)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
 
     return df_solved, df_has_soln
 
@@ -502,11 +447,8 @@ def plotPerfProf(
         #    print(ratios)
         uniq_ratios = ratios.unique()
         uniq_ratios.sort()  # sort in place
-<<<<<<< HEAD
+
         #print(uniq_ratios)
-=======
-        # print(uniq_ratios)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
         cum_cnt = np.sum(np.array([ratios <= ur for ur in uniq_ratios]), axis=1)
         cum_frac = cum_cnt / len(ratios)
         #print(cum_frac)
@@ -585,15 +527,10 @@ def plotCumProf(df, plotname="cum_profile", plottitle = "Cumulative Profile",
     time_buckets = range(0, 3600)
 
     for col in col_list:
-<<<<<<< HEAD
-        #print(col)
-        times = df_time[col]
-        #print(times)
-=======
         # print(col)
         times = df_time[col]
         # print(times)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
+
         cum_cnt = np.sum(np.array([times <= t for t in time_buckets]), axis=1)
         cum_frac = cum_cnt / len(df)
         #print(cum_frac)
@@ -616,15 +553,11 @@ def plotCumProf(df, plotname="cum_profile", plottitle = "Cumulative Profile",
     gap_buckets = np.linspace(0, 100, 1000)
 
     for col in col_list:
-<<<<<<< HEAD
-        #print(col)
-        gaps = df_gap[col]
-        #print(gaps)
-=======
+
         # print(col)
         gaps = df_gap[col]
         # print(gaps)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
+
         cum_cnt = np.sum(np.array([gaps <= g for g in gap_buckets]), axis=1)
         cum_frac = cum_cnt / len(df_gap)
         #print(cum_frac)
@@ -687,8 +620,7 @@ def plotBaselineProf(
 
     for col in col_list:
         if col == baseline or col[0] == "virtual_best":
-            continue
-<<<<<<< HEAD
+
         #print(col)
         # for each col, compute ratio
         ratios = df[col] / df[baseline]
@@ -696,15 +628,7 @@ def plotBaselineProf(
         uniq_ratios = ratios.unique()
         uniq_ratios.sort()  # sort in place
         #print(uniq_ratios)
-=======
-        # print(col)
-        # for each col, compute ratio
-        ratios = df[col] / df[baseline]
-        # print(df[col])
-        uniq_ratios = ratios.unique()
-        uniq_ratios.sort()  # sort in place
-        # print(uniq_ratios)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
+
         cum_cnt = np.sum(np.array([ratios <= ur for ur in uniq_ratios]), axis=1)
         cum_frac = cum_cnt / len(ratios)
 
@@ -715,11 +639,6 @@ def plotBaselineProf(
             uniq_ratios = np.append(uniq_ratios, xmax)  # append array at the boundary point
             cum_frac = np.append(cum_frac, cum_frac[-1])
 
-<<<<<<< HEAD
-        #print(uniq_ratios)
-=======
-        # print(uniq_ratios)
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
         #print(cum_frac)
 
         # Values less than one are scaled differently
@@ -900,7 +819,7 @@ if __name__ == "__main__":
         # "IBLP-FIS",
         # 'INTERD-DEN',
         # 'IBLP-DEN',
-        'ZHANG'
+        # 'ZHANG'
         'DENEGRE',
         # 'INTER-KP',
         # 'INT0SUM',
@@ -911,18 +830,21 @@ if __name__ == "__main__":
     # versions = ["1.2-opt", "rev1"]
     # versions = ["1.2-opt", "1.2-opt-cplex"]
     # versions = ['1.2+newWS','1.2+5.6']
-    versions = ['1.2']
+    versions = ['ipco']
     
     # Output parent path
     # outputDir = "/home/ted/Projects/MibS/output"
     # outputDir = "/home/feb223/tests/improvingDir/output"
-    outputDir = "/Users/feb223/projects/coin/intersectionCuts/test/output"
+    # outputDir = "/Users/feb223/projects/coin/intersectionCuts/test/output"
+    outputDir = "/home/federico/Scrivania/coin/improvingDir/tests"
 
     scenarios = {
-        'kSwaps_fracB' : 'ENUM_fracB',
-        'kSwaps+IDP_fracB' : 'ENUM+IDP_fracB',
-	    'watermelon+IDP_fracB' : 'MILP+IDP_fracB',
-        'watermelon_fracB' : 'MILP_fracB'
+        'MIBS' : 'MibS_IDIC',
+        'idB&C-IDIC' : 'idB&C-IDIC' 
+        # 'kSwaps_fracB' : 'ENUM_fracB',
+        # 'kSwaps+IDP_fracB' : 'ENUM+IDP_fracB',
+	    # 'watermelon+IDP_fracB' : 'MILP+IDP_fracB',
+        # 'watermelon_fracB' : 'MILP_fracB'
         # 'default' : 'Default',
         # 'default+WS' : 'Default w/ Warm Start',
         # 'default-frac',
@@ -1038,10 +960,10 @@ if __name__ == "__main__":
         'ub_solved': 'Number of UB problem solved',
         'objval': 'Object Value',
         'cut_time': 'Cut Generation Time',
-	    'int_cuts_tot' : 'Integer IDIC calls',
-	    'int_cuts_succ': 'Successful Integer IDIC calls',
-        'frac_cuts_tot' : 'Fractional IDIC calls',
-	    'frac_cuts_succ': 'Successful Fractional IDIC calls'
+	    # 'int_cuts_tot' : 'Integer IDIC calls',
+	    # 'int_cuts_succ': 'Successful Integer IDIC calls',
+        # 'frac_cuts_tot' : 'Fractional IDIC calls',
+	    # 'frac_cuts_succ': 'Successful Fractional IDIC calls'
     }
 
     df_proc = processTable(df_r, displayCols, writeLTX=False, filename=file_txt)
@@ -1065,14 +987,9 @@ if __name__ == "__main__":
     #     else:
     #         scenarios[k] = 'fractionalBranchStrategy'
 
-<<<<<<< HEAD
-    #baseline=None
-    baseline = ('No Cuts (link)', '1.2.1-final')
-    #baseline = ('Default', 'tailoff')
-=======
+
     baseline = None
-    baseline = ("MILP_fracB", '1.2')
->>>>>>> 4728371 (Add checkBilevelFeasibility with Improving Directions)
+    baseline = ("MibS_IDIC", 'ipco')
     #baseline = ("Type1IC", "1.2-opt")
     #baseline = ('GenNoGood+Type1+IntNoGood (link)', '1.2-opt')
     #baseline = ('Watermelon (frac+LV)', '1.2-opt')
