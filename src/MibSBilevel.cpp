@@ -241,7 +241,7 @@ MibSBilevel::createBilevel(CoinPackedVector *sol,
 	}
 
   //step 7
-  if(!shouldPrune_){
+  if(!shouldPrune_ && false){
      if((tagInSeenLinkingPool_ == MibSLinkingPoolTagLowerIsFeasible ||
           tagInSeenLinkingPool_ == MibSLinkingPoolTagUBIsSolved) ||
          (!isContainedInLinkingPool_ &&

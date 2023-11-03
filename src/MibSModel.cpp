@@ -2360,7 +2360,26 @@ MibSModel::userFeasibleSolution(const double * solution, bool &userFeasible)
   if(0)
     solver()->writeLp("userfeasible");
 
-  solType = createBilevel(sol);
+   if (!isBilevelAlreadyCreated || true){
+      solType = createBilevel(sol);
+      isBilevelAlreadyCreated = true;
+   }
+
+   if (isCutGenerationDone && !improvingDirectionFound && bS_->isIntegral_){
+      std::cout << "++++ Bilevel Feasible Solution!\n";
+      bS_->shouldPrune_ = true;
+      bS_->isLowerSolved_ = true;
+      bS_->isProvenOptimal_ = true;
+      solType = MibSHeurSol;
+      isHeurSolution = true;
+   } else {
+      bS_->shouldPrune_ = false;
+      bS_->isLowerSolved_ = false;
+      bS_->isProvenOptimal_ = false;
+      solType = MibSNoSol;
+      assert(!isCutGenerationDone || improvingDirectionFound || !bS_->isIntegral_);
+   }
+   
 
   if(solType != MibSNoSol){
       for(i = 0; i < upperDim_; i++){
@@ -2389,7 +2408,7 @@ MibSModel::userFeasibleSolution(const double * solution, bool &userFeasible)
 				this);
   }
   else if(solType == MibSHeurSol){
-      if(!bS_->isUBSolved_ && !isCutGenerationDone){
+      if(!bS_->isUBSolved_ && false){
 	  isHeurSolution = checkUpperFeasibility(lpSolution);
       }
       if(isHeurSolution == true){

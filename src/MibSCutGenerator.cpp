@@ -626,9 +626,9 @@ MibSCutGenerator::intersectionCuts(BcpsConstraintPool &conPool,
       // std::cout << "\n";
     } else 
     if (improvingDirectionType == MibSImprovingDirectionTypeLocalSearch){
-      if(localModel_->countIteration_ == 77136){
-        std::cout << "Stop here!\n";
-      }
+      // if(localModel_->countIteration_ == 250){
+      //   std::cout << "Stop here!\n";
+      // }
       // if(localModel_->countIteration_ <= 199){
         // CoinZeroN(lowerLevelSol, lCols);
       foundSolution = findImprovingDirectionLocalSearch(uselessIneqs, lowerLevelSol, lpSol,
@@ -5886,8 +5886,6 @@ MibSCutGenerator::bendersZeroSumCuts(BcpsConstraintPool &conPool)
 bool 
 MibSCutGenerator::generateConstraints(BcpsConstraintPool &conPool)
 {
-  // feb223
-  localModel_->improvingDirectionFound = false;
 
   //FIXME: MAKE THIS MORE SIMPLE
   int numCuts(0);
@@ -6790,8 +6788,6 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
                         double *lpSol, bool &isTimeLimReached)
 {
 
-  localModel_->isCutGenerationDone = true;
-
   localModel_->cutStats.enumerated++;
   int i, idx;
   int MAX_feasID(100);
@@ -6987,6 +6983,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
   delete[] currColUb;
   delete G2colOrd;
 
+  localModel_->isCutGenerationDone = true;
   localModel_->improvingDirectionFound = foundSolution;
 
   return foundSolution;

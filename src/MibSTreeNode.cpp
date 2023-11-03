@@ -768,23 +768,34 @@ MibSTreeNode::process(bool isRoot, bool rampUp)
 		lpStatus = static_cast<BlisLpStatus> 
 		    (generateConstraints(model, newConPool));
 
-#if 0
-        std::cout << "++++ Cut generation ended: "
-                  << "Improving Direction Found: " 
-                  << (mibsModel->improvingDirectionFound ? "YES" : "NO")
-                  << std::endl;
-        std::cout << "++++ Integer solution: "
-                  << (mibsModel->bS_->isIntegral_ ? "YES" : "NO")
-                  << std::endl;
-#endif
-        if (!mibsModel->improvingDirectionFound && mibsModel->bS_->isIntegral_){
-            std::cout << "++++ Solution Bilevel Feasible!\n";
+#if 1
+        // std::cout << "++++ Cut generation ended: "
+        //           << "Improving Direction Found: " 
+        //           << (mibsModel->improvingDirectionFound ? "YES" : "NO")
+        //           << std::endl;
+        // std::cout << "++++ Integer solution: "
+        //           << (mibsModel->bS_->isIntegral_ ? "YES" : "NO")
+        //           << std::endl;
+        // std::cout << "++++ Bilevel Created: "
+        //           << (mibsModel->isBilevelAlreadyCreated ? "YES" : "NO")
+        //           << std::endl;
+        // std::cout << "++++ Cut Generation Done: "
+        //           << (mibsModel->isCutGenerationDone ? "YES" : "NO")
+        //           << std::endl;
+        if (mibsModel->isCutGenerationDone &&
+            !mibsModel->improvingDirectionFound && 
+            mibsModel->bS_->isIntegral_){
+            // std::cout << "++++ Bilevel Feasible Solution!\n";
             model->feasibleSolution(numIntInfs, numObjInfs);
         }
-
-        
-        mibsModel->isCutGenerationDone = false;
+        mibsModel->improvingDirectionFound = false;
         mibsModel->isBilevelAlreadyCreated = false;
+        mibsModel->isCutGenerationDone = false;
+#endif
+
+        // mibsModel->isCutGenerationDone = false;
+        // mibsModel->isBilevelAlreadyCreated = false;
+
 
 		if(bS->shouldPrune_){
 		    setStatus(AlpsNodeStatusFathomed);
