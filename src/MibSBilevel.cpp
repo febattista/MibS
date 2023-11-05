@@ -1538,10 +1538,11 @@ void MibSBilevel::addSolutionToSeenLinkingSolutionPool(MibSLinkingPoolTag solTag
 		}
 		break;
 	}
-	case MibSLinkingPoolTagIsNotSet:
-		throw CoinError("Linking solution pool tag not set as it should be",
-						"addSolutionToSeenLinkingSolutionPool", "MibsBilevel");
-	}
+    case MibSLinkingPoolTagIsNotSet:
+      	throw CoinError("Linking solution pool tag not set as it should be",
+			"addSolutionToSeenLinkingSolutionPool", "MibsBilevel");
+
+    }
 }
 
 // #############################################################################
@@ -1557,6 +1558,8 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 	double zerotol(1e-7);
 
 	int i, colIndex, idx;
+
+	int feasIDindex = -1;
 
 	bool isFeasible(true), isLocalOptimal(true);
 
@@ -1702,6 +1705,7 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 
 		if (isFeasible){
 			isLocalOptimal = false;
+			feasIDindex = j;
 			break;
 		}
 	}
@@ -1711,9 +1715,22 @@ int MibSBilevel::checkImprovingDirections(const double *sol)
 	delete[] rhsUb;
 	delete[] llSol;
 	delete[] lhs;
+	delete[] rhs;
 	delete[] currColLb;
 	delete[] currColUb;
 	delete G2colOrd;
 
-	return isLocalOptimal;
+	return feasIDindex;
 }
+	    
+	
+	
+	    
+
+
+
+
+
+
+    
+ 

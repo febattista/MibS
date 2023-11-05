@@ -24,7 +24,13 @@ instanceDirs = {
     # 'MIPLIB3': '/home/feb223/improvingDir/MibS/Data/BOBILIB/general-bilevel/purely-integer/MIPLIB3',
     # 'DENEGRE': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/general-bilevel/purely-integer/DENEGRE',
     # 'INT0SUM': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/general-bilevel/purely-integer/INT0SUM',
-    'ZHANG': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/general-bilevel/purely-integer/ZHANG'
+    # 'ZHANG': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/general-bilevel/purely-integer/ZHANG',
+    # 'INTER-CLIQUE': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/interdiction/clique-interdiction/INTER-CLIQUE/plusBCPIns'
+    # 'mydataset1': '/home/federico/Scrivania/coin/improvingDir/tests/mydataset',
+    # 'DENEGRE2' : '/home/federico/Scrivania/coin/improvingDir/MibS/data/iblpDen2',
+    'ZHANG2' : '/home/federico/Scrivania/coin/improvingDir/MibS/data/iblpZhang2',
+    'INTER-KP': '/home/federico/Scrivania/coin/improvingDir/MibS/data/BOBILIB/interdiction/knapsack-interdiction/INTER-KP'
+
 }
 
 #versions = ['1.1', 'ib']
