@@ -338,7 +338,7 @@ MibSBilevel::checkBilevelFeasibility(bool isRoot)
 
 	goto TERM_CHECKBILEVELFEAS;
 
-	if (shouldSolveLower && !isContainedInLinkingPool_)
+	if (!isContainedInLinkingPool_)
 	{
 		// isProvenOptimal_ = true;
 

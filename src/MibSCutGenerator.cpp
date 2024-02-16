@@ -1602,6 +1602,18 @@ MibSCutGenerator::findLowerLevelSolImprovingDirectionIC(double *uselessIneqs, do
         }
       }
     }
+    else{//this case should not happen when we use intersection cut for removing
+	//the optimal solution of relaxation which satisfies integrality requirements
+	//std::cout << "iteration = " << localModel_->countIteration_ << std::endl;
+	//std::cout << "remaining time = " << remainingTime << std::endl;
+	//std::cout << "current time = " << timeLimit - localModel_->broker_->subTreeTimer().getTime() << std::endl;
+	//throw CoinError("The MIP which is solved for ImprovingDirectionIC, cannot be infeasible!",
+	//		"findLowerLevelSolImprovingDirectionIC", "MibSCutGenerator");
+    }
+
+    localModel_->isCutGenerationDone = true;
+    localModel_->improvingDirectionFound = foundSolution;
+    
     delete [] lCoeffsTimesLpSol;
     return foundSolution;
 }
@@ -6878,7 +6890,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
             MibSParams::maxEnumerationLocalSearch));
   bool keepOn(true);
 
-  // max_k = 0;
+
   // TODO: add check for the timeLimit
   while(!foundSolution && k <= max_k){
 
@@ -6899,7 +6911,7 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
         (localModel_->bS_->isIntegral_)) {
       // This point MUST be separated so call the TypeOptSol 
       // if TypeLocalSearch failed
-      // std::cout << "Local search failed! Trying Watermelon...\n";
+      std::cout << "Local search failed! Trying Watermelon...\n";
       foundSolution = findLowerLevelSolImprovingDirectionIC(uselessIneqs, 
                         improvingDir, lpSol, isTimeLimReached);
       
@@ -6913,15 +6925,15 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
         }
 
         for (i = 0; i < lRows + 2 * lCols; i++){
-          if (uselessIneqs[i] != zerotol){
+          if (uselessIneqs[i] > zerotol){
             w.uselessIneqsIdx.push_back(i);
             w.uselessIneqsVals.push_back(uselessIneqs[i]);
           }
         }
         feasID.push_back(w);
       } else {
-        foundSolution = false;
-        // assert(0);
+        // This case should never happen
+        assert(0);
       }
   }
 
@@ -6983,8 +6995,6 @@ bool MibSCutGenerator::findImprovingDirectionLocalSearch(
   delete[] currColUb;
   delete G2colOrd;
 
-  localModel_->isCutGenerationDone = true;
-  localModel_->improvingDirectionFound = foundSolution;
 
   return foundSolution;
 }

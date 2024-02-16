@@ -3960,8 +3960,52 @@ MibSModel::adjustParameters()
        }
     }
     if (MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_ON){
-	defaultCutIsOn = true;
+	   defaultCutIsOn = true;
+      paramValue = MibSPar_->entry(MibSParams::improvingDirectionType);
+
+      if (paramValue == MibSImprovingDirectionTypeLocalSearch){
+         // Param: "MibS_maxEnumerationLocalSearch"
+         if (MibSPar_->entry(MibSParams::maxEnumerationLocalSearch) > lowerDim_){
+            MibSPar()->setEntry(MibSParams::maxEnumerationLocalSearch,
+                        lowerDim_);
+         } else 
+         if (MibSPar_->entry(MibSParams::maxEnumerationLocalSearch) < 1){
+            // Param not set or invalid.
+            // Set a default value
+            MibSPar()->setEntry(MibSParams::maxEnumerationLocalSearch,
+                        (3 < lowerDim_ ? 3 : lowerDim_));
+         } 
+         // Param: "MibS_maxFeasImprovingDirections"
+         if (MibSPar_->entry(MibSParams::maxFeasImprovingDirections) < 1){
+            // Param not set or invalid.
+            // Set a default value
+            MibSPar()->setEntry(MibSParams::maxFeasImprovingDirections, 10);
+         }
+      } else 
+      if (paramValue == MibSImprovingDirectionTypeNotSet){
+         std::cout << "Improving direction type not set. Turning Opt Solution on." << std::endl;
+         MibSPar()->setEntry(MibSParams::improvingDirectionType,
+                        MibSImprovingDirectionTypeOptSol);
+      }
     }
+
+    // Setting "useImprovingDirectionPool" parameter
+   if (MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_OFF ||
+      MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_NOTSET){
+      MibSPar()->setEntry(MibSParams::useImprovingDirectionPool, PARAM_OFF);
+   } else if (MibSPar_->entry(MibSParams::useImprovingDirectionPool) == PARAM_ON) {
+      // Setting "maxImprovingDirectionPoolSize" parameter
+      paramValue = MibSPar_->entry(MibSParams::maxImprovingDirectionPoolSize);
+      if (paramValue < 1){
+         // Param not set or invalid.
+         // Set a default value
+         paramValue = 200;
+         MibSPar()->setEntry(MibSParams::maxImprovingDirectionPoolSize, paramValue);
+      }
+      // Preallocate enough space for seenImprovingDirections
+      seenImprovingDirections.reserve(paramValue + 
+               MibSPar_->entry(MibSParams::maxFeasImprovingDirections) + 5);
+   }
 
     //Param: "MibS_useImprovingSolutionIC" 
     paramValue = MibSPar_->entry(MibSParams::useImprovingSolutionIC);
@@ -4184,39 +4228,20 @@ MibSModel::printProblemInfo(){
        }              
     }
 
-    paramValue = MibSPar_->entry(MibSParams::improvingDirectionType);
+    if (MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_ON){
+       std::cout << "Improving direction intersection cut generator is on." << std::endl;
+    }
+
+   paramValue = MibSPar_->entry(MibSParams::improvingDirectionType);
 
    // Param: "MibS_ImprovingDirectionType" 
 	if (MibSPar_->entry(MibSParams::useImprovingDirectionIC) == PARAM_ON){
-      std::cout << "Improving direction intersection cut generator is on." << std::endl;
       if (paramValue == MibSImprovingDirectionTypeLocalSearch){
       std::cout << "Improving direction Local Search is on." << std::endl;
-         // Param: "MibS_maxEnumerationLocalSearch"
-         if (MibSPar_->entry(MibSParams::maxEnumerationLocalSearch) > lowerDim_){
-            MibSPar()->setEntry(MibSParams::maxEnumerationLocalSearch,
-                        lowerDim_);
-         } else 
-         if (MibSPar_->entry(MibSParams::maxEnumerationLocalSearch) < 1){
-            // Param not set or invalid.
-            // Set a default value
-            MibSPar()->setEntry(MibSParams::maxEnumerationLocalSearch,
-                        (3 < lowerDim_ ? 3 : lowerDim_));
-         } 
-         // Param: "MibS_maxFeasImprovingDirections"
-         if (MibSPar_->entry(MibSParams::maxFeasImprovingDirections) < 1){
-            // Param not set or invalid.
-            // Set a default value
-            MibSPar()->setEntry(MibSParams::maxFeasImprovingDirections, 10);
-         }
       } else 
       if (paramValue == MibSImprovingDirectionTypeOptSol){
-      std::cout << "Improving direction Watermelon is on." << std::endl;
-      } else 
-      if (paramValue == MibSImprovingDirectionTypeNotSet){
-      std::cout << "Improving direction type not set. Turning Watermelon on." << std::endl;
-      MibSPar()->setEntry(MibSParams::improvingDirectionType,
-                        MibSImprovingDirectionTypeOptSol);
-      }
+      std::cout << "Improving direction Opt Solution is on." << std::endl;
+      } 
 	}
 
     if (MibSPar_->entry(MibSParams::useHypercubeIC) == PARAM_ON){
