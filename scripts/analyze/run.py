@@ -30,7 +30,7 @@ def writeParamsToFile(outDir, params):
                 file.write(k + ' ' + v + '\n')
 
 
-def runExperiments(instPaths, outDir, versions, params, pbsfile=None, testname='mibs'):
+def runExperiments(instPaths, outDir, versions, params, pbsfile=None, testname='mibs', dryrun=False):
     """
         Use to run experiments on local machine or using qsub. 
     """
@@ -139,6 +139,10 @@ def runExperiments(instPaths, outDir, versions, params, pbsfile=None, testname='
                             else:
                                 argList += paramcmd.split()
                         
+                        if dryrun:
+                            print("            Dry run: " + ' '.join(argList))
+                            continue
+
                         # Run command and redirect output to outfile and errfile
                         if pbsfile:
                             argList += ["-o", outname,
@@ -181,6 +185,7 @@ if __name__ == "__main__":
     writeParams = params['writeParams']
     testName = params['testName']
     pbsFile = params['pbsFile']
+    dryRun = params['dryRun']
 
     ######################### Run Experimests #########################
     runExperiments(instanceDirs, 
@@ -188,5 +193,6 @@ if __name__ == "__main__":
                    versions, 
                    mibsParamsInputs, 
                    pbsfile=pbsFile, 
-                   testname=testName)
+                   testname=testName,
+                   dryrun=dryRun)
     

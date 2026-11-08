@@ -110,6 +110,12 @@ class Parameters:
         )
 
         self.parser.add_argument(
+            "--dryRun",
+            action="store_true",
+            help="Print the command that would be run for each instance instead of running it.",
+        )
+
+        self.parser.add_argument(
             "--pbsFile",
             default=None,
             help="Path to the PBS submission script to use with qsub. If omitted, experiments are run \
@@ -175,6 +181,7 @@ class Parameters:
         self.parameters['writeParams'] = args.writeParams
         self.parameters['testName'] = args.testName
         self.parameters['pbsFile'] = _abs_path(args.pbsFile)
+        self.parameters['dryRun'] = args.dryRun
         self.parameters["dataSets"] = args.dataSets
         self.parameters['aggregateDatasets'] = args.aggregateDatasets
         self.parameters['fileCsvIn'] = _abs_path(args.fileCsvIn)
