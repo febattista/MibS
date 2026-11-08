@@ -133,7 +133,7 @@ def runExperiments(instPaths, outDir, versions, params, pbsfile=None, testname='
                         else:
                             # Using command line
                             paramcmd = ' -'.join(' '.join(_) for _ in params[scenario].items())
-                            paramcmd = '' + paramcmd
+                            paramcmd = '-' + paramcmd
                             if pbsfile:
                                 argList[-1] += ",PARAMARG=" + paramcmd
                             else:
