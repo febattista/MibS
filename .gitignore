@@ -5,3 +5,7 @@ autom4te.cache*
 
 *.DS_Store
 .DS_Store
+
+*.out
+*.err
+*.pyc
