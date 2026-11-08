@@ -611,7 +611,7 @@ def dropFilter(df, scenarios, ds):
     df = df.loc[:, scenarios.values()].copy()
     # replace unsolved cases by a large number
     for scn in df.columns:
-        df.loc[:, scn] = pd.to_numeric(df[scn], errors="coerce").replace(np.nan, 1e11)
+        df[scn] = pd.to_numeric(df[scn], errors="coerce").replace(np.nan, 1e11)
     # apply index filter on solution time
     df_time = df.xs(
         (ds, "cpu"), level=["datasets", "fields"], axis=1, drop_level=True
