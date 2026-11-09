@@ -81,7 +81,7 @@ def make_plots_improving_directions(params, keywords):
     ################################################################################################
     #            IBLP DATASET                                                                      #
     ################################################################################################
-    aggrDataSName = "F-D-D2-Z-Z2"
+    aggrDataSName = "IBLP"
 
     dataSets = [
         "iblpDen",
@@ -440,7 +440,7 @@ def make_plots_improving_directions(params, keywords):
     ################################################################################################
     #            INTERDICTION DATASET                                                              #
     ################################################################################################
-    aggrDataSName = "INT-DEN-SHI"
+    aggrDataSName = "Interdiction"
 
     dataSets = [
         "interKpShi",
