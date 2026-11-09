@@ -9,3 +9,5 @@ autom4te.cache*
 *.out
 *.err
 *.pyc
+*.csv
+*.pdf
