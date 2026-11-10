@@ -622,6 +622,13 @@ def dropFilter(df, scenarios, ds):
     df_gap = df.xs(
         (ds, "gap"), level=["datasets", "fields"], axis=1, drop_level=True
     ).copy()
+    # replace time-limit cases by a large number, except for the ones listed here,
+    # which are still meaningful when a run is not solved. A new measure added later 
+    # is replaced by default, unless added to this list
+    still_meaningful = ["solved", "gap", "root_gap", "100_gap", "objval"]
+    for scn in df.columns:
+        if scn[2] == ds and scn[3] not in still_meaningful:
+            df.loc[df_solved[scn[:2]] != True, scn] = 1e11
     # df_time = pd.to_numeric(df_time, errors='coerce').replace(np.nan, 36000)
     # filter out cases where time is < 5'' or > 3600'' for all methods
     col_list = df_time.columns.values.tolist()
